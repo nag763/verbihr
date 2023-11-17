@@ -1,0 +1,28 @@
+[tasks.start-dev-front]
+args = ["serve", "--port", "3000"]
+command = "trunk"
+workspace = false
+
+[tasks.start-dev-assets]
+args = ["tailwindcss@3.3.0", "-i", "main.css", "-o", "assets/tailwind.css", "-c", "tailwind.config.js", "--watch", "src/"]
+command = "npx"
+workspace = false
+
+[tasks.start-dev]
+run_task = { name = ["start-dev-assets", "start-dev-front"], fork = true, parallel=true }
+workspace = false
+
+
+[tasks.build-release-assets]
+args = ["tailwindcss@3.3.0", "-i", "main.css", "-o", "release/assets/tailwind.css", "-c", "tailwind.config.js", "src/"]
+command = "npx"
+workspace = false
+
+[tasks.build-release-front]
+args = ["build", "--target", "web", "--no-pack", "--release" ,"--out-dir", "release"]
+command = "wasm-pack"
+workspace = false
+
+[tasks.prepare-release]
+run_task = { name = ["build-release-assets", "build-release-front"], fork = true, parallel=true }
+workspace = false

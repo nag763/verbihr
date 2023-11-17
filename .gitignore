@@ -1,0 +1,6 @@
+/target
+/dist
+/assets
+/pkg
+/release/*
+!release/index.html
