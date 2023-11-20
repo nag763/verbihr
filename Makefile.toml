@@ -19,7 +19,7 @@ command = "npx"
 workspace = false
 
 [tasks.build-release-front]
-args = ["build", "--target", "web", "--no-pack", "--release" ,"--out-dir", "release"]
+args = ["build", "--target", "web", "--no-pack", "--no-typescript", "--release" ,"--out-dir", "release"]
 command = "wasm-pack"
 workspace = false
 
