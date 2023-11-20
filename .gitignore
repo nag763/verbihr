@@ -2,6 +2,5 @@
 /dist
 /assets
 /pkg
-release/*
 !release/index.html
-!/release/index.html
+release/*

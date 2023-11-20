@@ -16,5 +16,9 @@ name = "app"
 path = "bin/app.rs"
 
 [dependencies]
+gloo-console = "0.3.0"
+serde = { version = "1.0.192", features = ["derive"] }
+serde_yaml = "0.9.27"
 wasm-bindgen = "0.2.88"
+web-sys = { version = "0.3.65", features = ["Navigator", "MediaQueryList", "Window"] }
 yew = { version = "0.21.0", features = ["csr"] }

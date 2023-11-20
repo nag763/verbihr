@@ -1,0 +1,19 @@
+locales:
+  - en: 
+    short_name: en
+    long_name: English
+    navigator_names: [en, en_UK, en_US]
+    is_default: true
+    translations:
+      header: Head
+      all_rights_reserved: All rights reserved.
+      footer: This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 License. Feel free to share and use for non-profit purposes with proper attribution.
+  - fr:
+    short_name: fr
+    long_name: Français
+    navigator_names: [fr, fr_FR, fr_BE]
+    is_default: false
+    translations:
+      header: Tête
+      all_rights_reserved: Tous droits réservés.
+      footer: Ce travail est sous licence Creative Commons Attribution-NonCommercial 4.0 International. N'hésitez pas à le partager et à l'utiliser à des fins non lucratives avec une attribution appropriée.
