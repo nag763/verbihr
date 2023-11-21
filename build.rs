@@ -3,9 +3,7 @@ use std::{collections::HashMap, fs::File};
 use serde::{Deserialize, Serialize};
 use std::io::prelude::*;
 
-const TRANSLATIONS_IN_PATH : &str = "src/resources/translation.yaml";
 const TRANSLATIONS_OUT_PATH : &str = "src/resources/translation.pc";
-
 
 #[derive(Deserialize)]
 struct LocaleDocumentRoot {
@@ -13,12 +11,26 @@ struct LocaleDocumentRoot {
 }
 
 #[derive(Deserialize, PartialEq, Eq, Clone, Serialize)]
-pub struct Locale {
+struct Locale {
     long_name: String,
     short_name: String,
     navigator_names: Vec<String>,
     is_default: bool,
-    pub translations: TranslationMap
+    translations: TranslationMap
+}
+
+#[derive(Deserialize, Serialize)]
+struct Verb {
+    infinitive: String,
+    prasens_ich: String,
+    prasens_du: String,
+    prasens_er: String,
+    prateritum_ich: String,
+    partizip_ii: String,
+    konjuktiv_ii_ich: String,
+    imperativ_singular: String,
+    imperativ_plural: String,
+    hilfsverb: String
 }
 
 
@@ -26,13 +38,13 @@ pub struct Locale {
 pub struct TranslationMap(HashMap<String, String>);
 
 fn main() -> anyhow::Result<(), anyhow::Error> {
-    println!("cargo:rerun-if-changed={TRANSLATIONS_IN_PATH}");
-    let translations_yaml: LocaleDocumentRoot = serde_yaml::from_str(include_str!("src/resources/translation.yaml"))?;
+    println!("cargo:rerun-if-changed=translation.yaml");
+    let translations_yaml: LocaleDocumentRoot = serde_yaml::from_str(include_str!("translation.yaml"))?;
     let translations_pc = postcard::to_stdvec(&translations_yaml.locales)?;
-    let mut file = match File::create(TRANSLATIONS_OUT_PATH) {
+    let mut trans_file = match File::create(TRANSLATIONS_OUT_PATH) {
         Ok(f) => f,
         Err(_) => File::create(TRANSLATIONS_OUT_PATH)?,
     };
-    file.write_all(&translations_pc)?;
+    trans_file.write_all(&translations_pc)?;
     Ok(())
 }

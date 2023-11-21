@@ -10,7 +10,7 @@ pub mod footer {
         let context = use_context::<Rc<Context>>().unwrap();
         let translations = &context.translations;
         html! {
-            <footer class="text-center sm:py-2 md:py-4 bg-gray-900 h-full text-white text-xs">
+            <footer class="text-center sm:py-2 md:py-4 bg-slate-200 dark:bg-gray-900 h-full text-black dark:text-white text-xs">
             <div class="flex md:flex-col items-center justify-center sm:space-x-2 mdspace-x-4 mt-auto">
                 <a href="https://github.com/nag763/verbihr" target="_blank">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,14 +27,85 @@ pub mod footer {
 
 pub mod header {
 
-    use yew::{function_component, Html, html};
+    use std::rc::Rc;
+
+    use web_sys::{Event, HtmlSelectElement, MouseEvent};
+    use yew::{function_component, Html, html, use_context, NodeRef, Callback};
+
+    use crate::{i18n::Locale, context::Context};
 
     #[function_component(Header)]
     pub fn header() -> Html {
+
+        let light_mode_icon : Html = html!{
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        };
+
+        let dark_mode_icon : Html = html! {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>
+
+        };
+
+        let context = use_context::<Rc<Context>>().unwrap();
+        
+        let user_locale = &context.locale;
+        let select_ref = NodeRef::default();
+        let is_selected = |locale: &Locale| {
+            if let Some(user_locale) = user_locale.as_ref() {
+                user_locale.short_name == locale.short_name
+            } else {
+                false
+            }
+        };
+        let onchange = {
+                let select_ref = select_ref.clone();
+                let user_locale = user_locale.clone();
+                Callback::from(move |_e: Event| {
+                if let Some(select) = select_ref.cast::<HtmlSelectElement>() {
+                    if let Some(locale) = Locale::get_by_short_name(&select.value()) {
+                        user_locale.set(Some(locale));
+                    }
+
+                }
+            })
+        };
+
+        let onclick = {
+            let dark_mode_enabled = context.dark_mode.clone();
+            let dark_mode_val = *context.dark_mode;
+            Callback::from(move |_e: MouseEvent| {
+                dark_mode_enabled.set(!dark_mode_val);
+            })
+        };
+
         html! {
-            <nav class="bg-gradient-to-r from-black via-red-700 to-yellow-500 flex items-center justify-between p-6">
+            <nav class="flex items-center justify-between p-6">
             <div class="text-white font-bold text-xl">{"Verbihr"}</div>
-            <div class="space-x-4">
+            <div class="flex space-x-4">
+            <div {onclick} class="w-6 h-6 text-black">
+                if *context.dark_mode {
+                    {dark_mode_icon}
+                } else {
+                    {light_mode_icon}
+                }
+            </div>
+                <select {onchange} ref={select_ref} class="border-0 bg-transparent">
+                    {Locale::get_locales().iter().map(|locale| 
+                        html! { <option value={locale.short_name.to_string()} selected={is_selected(locale)}>{locale.short_name.to_string()}</option> }
+                    ).collect::<Html>()}
+                </select>
             </div>
           </nav>
         }

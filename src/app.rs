@@ -9,6 +9,7 @@ use crate::utils::get_navigator_languages;
 
 #[function_component(App)]
 pub fn app() -> Html {
+
     let locale : UseStateHandle<Option<Locale>> = use_state(|| {
         if let Some(navigator_language) = get_navigator_languages() {
             Locale::get_locale_for_navigator_languages(navigator_language)
@@ -35,6 +36,8 @@ pub fn app() -> Html {
         }
     });
 
+    let dark_mode_val = (*dark_mode).clone();
+
     let context = Rc::new(Context {
         locale,
         dark_mode,
@@ -42,18 +45,19 @@ pub fn app() -> Html {
     });
 
     html! {
-
         <ContextProvider <Rc<Context>> {context}>
-            <div class={classes!["h-screen", "grid", "grid-rows-12", "auto-rows-fr"]}>
-            <div class="row-span-1">
-                    <Header/>
-                </div>
-                <div class="row-span-10">
-                    <Body />
+            <div class={classes!( dark_mode_val.then_some("dark"))}>
+                <div class={classes!["h-screen", "grid", "grid-rows-12", "auto-rows-fr"]}>
+                    <div class="row-span-1 bg-gradient-to-r from-black via-red-700 to-yellow-500">
+                            <Header/>
+                        </div>
+                        <div class="row-span-10 bg-slate-200 dark:bg-gray-900">
+                            <Body />
 
-                </div>
-                <div class="row-span-1">
-                    <Footer/>
+                        </div>
+                        <div class="row-span-1">
+                            <Footer/>
+                        </div>
                 </div>
             </div>
         </ContextProvider<Rc<Context>>>
