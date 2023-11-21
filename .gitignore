@@ -2,5 +2,7 @@
 /dist
 /assets
 /pkg
-!release/index.html
+!/release
 release/*
+!release/index.html
+src/resources/translation.pc

@@ -4,10 +4,7 @@ use serde::Deserialize;
 use yew::{function_component, Html, html, Properties};
 
 thread_local! {
-    static LOCALES: Cell<Vec<Locale>> = Cell::new({
-        let locale_root : LocaleDocumentRoot = serde_yaml::from_str(include_str!("resources/translation.yaml")).unwrap();
-        locale_root.locales
-    });
+    static LOCALES: Cell<Vec<Locale>> = Cell::new(postcard::from_bytes(include_bytes!("resources/translation.pc")).unwrap());
 }
 
 #[derive(Debug,Clone, PartialEq, Eq, Deserialize)]
@@ -19,11 +16,6 @@ impl Deref for TranslationMap {
     fn deref(&self) -> &Self::Target {
         &self.0
     }
-}
-
-#[derive(Deserialize)]
-struct LocaleDocumentRoot {
-    pub locales: Vec<Locale>
 }
 
 #[derive(Deserialize, PartialEq, Eq, Clone)]

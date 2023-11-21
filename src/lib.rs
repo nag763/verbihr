@@ -1,11 +1,10 @@
 use app::App;
 use wasm_bindgen::prelude::wasm_bindgen;
 
-
-mod i18n;
-mod components;
-mod utils;
-mod context;
+pub mod i18n;
+pub mod components;
+pub mod utils;
+pub mod context;
 pub mod app;
 
 #[wasm_bindgen(start)]

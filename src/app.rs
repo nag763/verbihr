@@ -1,11 +1,11 @@
 use std::rc::Rc;
 
-use yew::{function_component, Html, html, classes, HtmlResult, use_memo, use_state, UseStateHandle, ContextProvider};
+use yew::{function_component, Html, html, classes, use_memo, use_state, UseStateHandle, ContextProvider};
 
 use crate::components::prelude::*;
+use crate::context::Context;
 use crate::i18n::Locale;
 use crate::utils::get_navigator_languages;
-use crate::context::Context;
 
 #[function_component(App)]
 pub fn app() -> Html {
