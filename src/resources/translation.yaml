@@ -7,6 +7,8 @@ locales:
     translations:
       all_rights_reserved: All rights reserved.
       footer: This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 License. Feel free to share and use for non-profit purposes with proper attribution.
+      intro: This application is designed to assist in the learning of German irregular verbs, providing a valuable resource for mastering this essential aspect of the German language.
+      start: Start
   - fr:
     short_name: fr
     long_name: Français
@@ -15,3 +17,5 @@ locales:
     translations:
       all_rights_reserved: Tous droits réservés.
       footer: Ce travail est sous licence Creative Commons Attribution-NonCommercial 4.0 International. N'hésitez pas à le partager et à l'utiliser à des fins non lucratives avec une attribution appropriée.
+      intro: Cette application est conçue pour aider à l'apprentissage des verbes irréguliers allemands, fournissant une ressource précieuse pour maîtriser cet aspect essentiel de la langue allemande.
+      start: Démarrer
