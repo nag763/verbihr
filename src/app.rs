@@ -21,11 +21,7 @@ pub fn app() -> Html {
     });
 
     let translations = use_memo((*locale).clone(), |locale| {
-        if let Some(locale) = locale {
-            Some(locale.clone().translations)
-        } else {
-            None
-        }
+        locale.as_ref().map(|locale| locale.clone().translations)
     });
     
     let dark_mode = use_state(|| {
@@ -36,7 +32,7 @@ pub fn app() -> Html {
         }
     });
 
-    let dark_mode_val = (*dark_mode).clone();
+    let dark_mode_val = *dark_mode;
 
     let context = Rc::new(Context {
         locale,

@@ -42,15 +42,15 @@ impl Locale {
                 return locales.get(index).cloned();
             }
         }
-        return None;
+        None
     }
 
     pub fn get_default_locale() -> Option<Locale> {
-        LOCALES.get_or_init(Self::init).into_iter().find(|locale| locale.is_default).cloned()
+        LOCALES.get_or_init(Self::init).iter().find(|locale| locale.is_default).cloned()
     }
 
     pub fn get_by_short_name(short_name: &str) -> Option<Locale> {
-        LOCALES.get_or_init(Self::init).into_iter().find(|locale| locale.short_name == short_name).cloned()
+        LOCALES.get_or_init(Self::init).iter().find(|locale| locale.short_name == short_name).cloned()
     }
 }
 

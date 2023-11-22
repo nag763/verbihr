@@ -44,12 +44,8 @@ pub struct TranslationMap(HashMap<String, String>);
 
 fn main() -> anyhow::Result<(), anyhow::Error> {
     let must_check_assets = {
-        if let Some(profile) = std::env::var("PROFILE").ok() {
-            if profile == "release" {
-                false
-            } else {
-                true
-            }
+        if let Ok(profile) = std::env::var("PROFILE") {
+            profile != "release"
         } else {
             true
         }
