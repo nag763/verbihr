@@ -1,9 +1,0 @@
-/target
-/dist
-/assets
-/pkg
-release/*
-!release/index.html
-!release/index.js
-!release/favicon.ico
-src/resources/translation.pc
