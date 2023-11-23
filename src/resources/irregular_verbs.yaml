@@ -1,0 +1,19 @@
+irregular_verbs:
+  - rufen:
+    infinitiv: "rufen"
+    prasens_ich: "rufe"
+    prasens_er: "ruft"
+    preterit: "rief"
+    partizip_ii: "gerufen"
+    meaning:
+      en: "to call"
+      fr: "appeler"
+  - helfen:
+    infinitiv: "helfen"
+    prasens_ich: "helfe"
+    prasens_er: "hilft"
+    preterit: "half"
+    partizip_ii: "geholfen"
+    meaning:
+      en: "to help"
+      fr: "aider"

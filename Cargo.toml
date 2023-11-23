@@ -5,17 +5,17 @@ edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
-
+doc = false
 
 [profile.release]
 lto = true
 codegen-units = 1
-
-[[bin]]
-name = "app"
-path = "bin/app.rs"
+strip = true
+panic = "abort"
+opt-level = "z" 
 
 [dependencies]
+derive_more = "0.99.17"
 gloo-console = "0.3.0"
 postcard = { version = "1.0.8"}
 serde = { version = "1.0.192", features = ["derive"] }

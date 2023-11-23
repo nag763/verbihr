@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use std::io::prelude::*;
 
 const TRANSLATIONS_OUT_PATH: &str = "src/resources/translation.pc";
+const IRREGULAR_VERBS_OUT_PATH: &str = "src/resources/irregular_verbs.pc";
 const ASSETS_PATH: &str = "assets";
 const STYLES_PATH: &str = "assets/tailwind.css";
 
@@ -25,18 +26,19 @@ struct Locale {
     translations: TranslationMap,
 }
 
+#[derive(Deserialize)]
+struct GermanVerbRoot {
+    pub irregular_verbs: Vec<GermanVerb>
+}
+
 #[derive(Deserialize, Serialize)]
-struct Verb {
-    infinitive: String,
+struct GermanVerb {
+    infinitiv: String,
     prasens_ich: String,
-    prasens_du: String,
     prasens_er: String,
-    prateritum_ich: String,
+    preterit: String,
     partizip_ii: String,
-    konjuktiv_ii_ich: String,
-    imperativ_singular: String,
-    imperativ_plural: String,
-    hilfsverb: String,
+    meaning: HashMap<String, String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
@@ -68,16 +70,25 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
                 .output()?;
         }
     }
-    println!("cargo:rerun-if-changed=src/resources/translation.yaml");
-    let translations_yaml: LocaleDocumentRoot =
-        serde_yaml::from_str(include_str!("src/resources/translation.yaml"))?;
     if fs::metadata(TRANSLATIONS_OUT_PATH).is_err() {
+        let translations_yaml: LocaleDocumentRoot =
+        serde_yaml::from_str(include_str!("src/resources/translation.yaml"))?;
         let translations_pc = postcard::to_stdvec(&translations_yaml.locales)?;
         let mut trans_file = match File::create(TRANSLATIONS_OUT_PATH) {
             Ok(f) => f,
             Err(_) => File::create(TRANSLATIONS_OUT_PATH)?,
         };
         trans_file.write_all(&translations_pc)?;
+    }
+    if fs::metadata(IRREGULAR_VERBS_OUT_PATH).is_err() {
+        let german_verb_root: GermanVerbRoot =
+        serde_yaml::from_str(include_str!("src/resources/irregular_verbs.yaml"))?;
+        let german_verbs_pc = postcard::to_stdvec(&german_verb_root.irregular_verbs)?;
+        let mut verb_file = match File::create(IRREGULAR_VERBS_OUT_PATH) {
+            Ok(f) => f,
+            Err(_) => File::create(IRREGULAR_VERBS_OUT_PATH)?,
+        };
+        verb_file.write_all(&german_verbs_pc)?;
     }
     Ok(())
 }

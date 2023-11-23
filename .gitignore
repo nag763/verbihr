@@ -6,4 +6,4 @@ release/*
 !release/index.html
 !release/index.js
 !release/favicon.ico
-src/resources/translation.pc
+src/resources/*.pc
