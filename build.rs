@@ -28,7 +28,7 @@ struct Locale {
 
 #[derive(Deserialize)]
 struct GermanVerbRoot {
-    pub irregular_verbs: Vec<GermanVerb>
+    pub irregular_verbs: Vec<GermanVerb>,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -72,7 +72,7 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
     }
     if fs::metadata(TRANSLATIONS_OUT_PATH).is_err() {
         let translations_yaml: LocaleDocumentRoot =
-        serde_yaml::from_str(include_str!("src/resources/translation.yaml"))?;
+            serde_yaml::from_str(include_str!("src/resources/translation.yaml"))?;
         let translations_pc = postcard::to_stdvec(&translations_yaml.locales)?;
         let mut trans_file = match File::create(TRANSLATIONS_OUT_PATH) {
             Ok(f) => f,
@@ -82,7 +82,7 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
     }
     if fs::metadata(IRREGULAR_VERBS_OUT_PATH).is_err() {
         let german_verb_root: GermanVerbRoot =
-        serde_yaml::from_str(include_str!("src/resources/irregular_verbs.yaml"))?;
+            serde_yaml::from_str(include_str!("src/resources/irregular_verbs.yaml"))?;
         let german_verbs_pc = postcard::to_stdvec(&german_verb_root.irregular_verbs)?;
         let mut verb_file = match File::create(IRREGULAR_VERBS_OUT_PATH) {
             Ok(f) => f,

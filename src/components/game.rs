@@ -1,26 +1,25 @@
 use std::rc::Rc;
 
-use yew::{function_component, Properties, html, Html};
+use yew::{function_component, html, Html, Properties};
 
 use crate::i18n::{TranslationMap, I18N};
 
 #[derive(Properties, PartialEq, Eq)]
 pub struct GameProperties {
     #[prop_or_default]
-    pub translations: Rc<Option<TranslationMap>>
+    pub translations: Rc<Option<TranslationMap>>,
 }
 
 #[function_component(Game)]
 pub fn game(props: &GameProperties) -> Html {
-
     let translations = &props.translations;
 
-    html!{
+    html! {
     <>
         <div class="flex flex-col justify-between h-full">
 
             <h1 class="text-2xl md:text-4xl font-bold mb-4">{"User Input Table"}</h1>
-        
+
             <table class="border-separate border-spacing-2">
             <thead>
                 <tr>

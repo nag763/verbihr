@@ -1,11 +1,11 @@
 use std::{collections::HashMap, ops::Deref, rc::Rc, sync::OnceLock};
 
 use serde::Deserialize;
-use yew::{function_component, Html, html, Properties};
+use yew::{function_component, html, Html, Properties};
 
 static LOCALES: OnceLock<Vec<Locale>> = OnceLock::new();
 
-#[derive(Debug,Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct TranslationMap(HashMap<String, String>);
 
 impl Deref for TranslationMap {
@@ -22,11 +22,10 @@ pub struct Locale {
     pub short_name: String,
     navigator_names: Vec<String>,
     is_default: bool,
-    pub translations: TranslationMap
+    pub translations: TranslationMap,
 }
 
 impl Locale {
-
     fn init() -> Vec<Locale> {
         postcard::from_bytes(include_bytes!("resources/translation.pc")).unwrap()
     }
@@ -38,7 +37,10 @@ impl Locale {
     pub fn get_locale_for_navigator_languages(web_names: Vec<String>) -> Option<Locale> {
         let locales = LOCALES.get_or_init(Self::init);
         for web_name in web_names {
-            if let Some(index) = locales.iter().position(|v| v.navigator_names.contains(&web_name)) {
+            if let Some(index) = locales
+                .iter()
+                .position(|v| v.navigator_names.contains(&web_name))
+            {
                 return locales.get(index).cloned();
             }
         }
@@ -46,11 +48,19 @@ impl Locale {
     }
 
     pub fn get_default_locale() -> Option<Locale> {
-        LOCALES.get_or_init(Self::init).iter().find(|locale| locale.is_default).cloned()
+        LOCALES
+            .get_or_init(Self::init)
+            .iter()
+            .find(|locale| locale.is_default)
+            .cloned()
     }
 
     pub fn get_by_short_name(short_name: &str) -> Option<Locale> {
-        LOCALES.get_or_init(Self::init).iter().find(|locale| locale.short_name == short_name).cloned()
+        LOCALES
+            .get_or_init(Self::init)
+            .iter()
+            .find(|locale| locale.short_name == short_name)
+            .cloned()
     }
 }
 
@@ -60,17 +70,17 @@ pub struct I18NProperties {
     #[prop_or_default]
     pub translations: Rc<Option<TranslationMap>>,
     #[prop_or_default]
-    pub default: Option<String>
+    pub default: Option<String>,
 }
 
 #[function_component(I18N)]
 pub fn i18n(props: &I18NProperties) -> Html {
-     let value = if let Some(translation_map) = props.translations.as_ref() {
+    let value = if let Some(translation_map) = props.translations.as_ref() {
         translation_map.get(&props.label).or(props.default.as_ref())
     } else {
         None
     };
-    html!{
+    html! {
         <>if let Some(value) = value { {value} } else { {&props.label} } </>
     }
 }

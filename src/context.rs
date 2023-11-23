@@ -8,5 +8,5 @@ use crate::i18n::{Locale, TranslationMap};
 pub struct Context {
     pub locale: UseStateHandle<std::option::Option<Locale>>,
     pub dark_mode: UseStateHandle<bool>,
-    pub translations : Rc<Option<TranslationMap>>
+    pub translations: Rc<Option<TranslationMap>>,
 }

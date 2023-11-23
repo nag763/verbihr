@@ -1,6 +1,8 @@
 use std::rc::Rc;
 
-use yew::{function_component, Html, html, classes, use_memo, use_state, UseStateHandle, ContextProvider};
+use yew::{
+    classes, function_component, html, use_memo, use_state, ContextProvider, Html, UseStateHandle,
+};
 
 use crate::components::prelude::*;
 use crate::context::Context;
@@ -9,8 +11,7 @@ use crate::utils::get_navigator_languages;
 
 #[function_component(App)]
 pub fn app() -> Html {
-
-    let locale : UseStateHandle<Option<Locale>> = use_state(|| {
+    let locale: UseStateHandle<Option<Locale>> = use_state(|| {
         if let Some(navigator_language) = get_navigator_languages() {
             Locale::get_locale_for_navigator_languages(navigator_language)
         } else if !Locale::get_locales().is_empty() {
@@ -23,9 +24,12 @@ pub fn app() -> Html {
     let translations = use_memo((*locale).clone(), |locale| {
         locale.as_ref().map(|locale| locale.clone().translations)
     });
-    
+
     let dark_mode = use_state(|| {
-        if let Ok(val) = web_sys::window().unwrap().match_media("(prefers-color-scheme: dark)") {
+        if let Ok(val) = web_sys::window()
+            .unwrap()
+            .match_media("(prefers-color-scheme: dark)")
+        {
             val.is_some()
         } else {
             false
@@ -37,7 +41,7 @@ pub fn app() -> Html {
     let context = Rc::new(Context {
         locale,
         dark_mode,
-        translations
+        translations,
     });
 
     html! {

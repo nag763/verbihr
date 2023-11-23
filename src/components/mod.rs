@@ -1,9 +1,9 @@
 pub mod footer {
     use std::rc::Rc;
 
-    use yew::{function_component, Html, html, use_context};
+    use yew::{function_component, html, use_context, Html};
 
-    use crate::{i18n::I18N, context::Context};
+    use crate::{context::Context, i18n::I18N};
 
     #[function_component(Footer)]
     pub fn footer() -> Html {
@@ -30,14 +30,13 @@ pub mod header {
     use std::rc::Rc;
 
     use web_sys::{Event, HtmlSelectElement, MouseEvent};
-    use yew::{function_component, Html, html, use_context, NodeRef, Callback};
+    use yew::{function_component, html, use_context, Callback, Html, NodeRef};
 
-    use crate::{i18n::Locale, context::Context};
+    use crate::{context::Context, i18n::Locale};
 
     #[function_component(Header)]
     pub fn header() -> Html {
-
-        let light_mode_icon : Html = html!{
+        let light_mode_icon: Html = html! {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="5"></circle>
                 <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -51,7 +50,7 @@ pub mod header {
             </svg>
         };
 
-        let dark_mode_icon : Html = html! {
+        let dark_mode_icon: Html = html! {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
             </svg>
@@ -59,7 +58,7 @@ pub mod header {
         };
 
         let context = use_context::<Rc<Context>>().unwrap();
-        
+
         let user_locale = &context.locale;
         let select_ref = NodeRef::default();
         let is_selected = |locale: &Locale| {
@@ -70,14 +69,13 @@ pub mod header {
             }
         };
         let onchange = {
-                let select_ref = select_ref.clone();
-                let user_locale = user_locale.clone();
-                Callback::from(move |_e: Event| {
+            let select_ref = select_ref.clone();
+            let user_locale = user_locale.clone();
+            Callback::from(move |_e: Event| {
                 if let Some(select) = select_ref.cast::<HtmlSelectElement>() {
                     if let Some(locale) = Locale::get_by_short_name(&select.value()) {
                         user_locale.set(Some(locale));
                     }
-
                 }
             })
         };
@@ -102,7 +100,7 @@ pub mod header {
                 }
             </div>
                 <select {onchange} ref={select_ref} class="border-0 bg-transparent hover:text-blue-500 transition-colors duration-300">
-                    {Locale::get_locales().iter().map(|locale| 
+                    {Locale::get_locales().iter().map(|locale|
                         html! { <option value={locale.short_name.to_string()} selected={is_selected(locale)}>{locale.short_name.to_string()}</option> }
                     ).collect::<Html>()}
                 </select>
@@ -116,7 +114,7 @@ pub mod body;
 mod game;
 
 pub mod prelude {
-    pub use super::header::Header;
-    pub use super::footer::Footer;
     pub use super::body::Body;
+    pub use super::footer::Footer;
+    pub use super::header::Header;
 }
