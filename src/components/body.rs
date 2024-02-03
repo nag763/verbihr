@@ -1,16 +1,18 @@
 use std::rc::Rc;
 
+use rand::seq::SliceRandom;
 use wasm_bindgen::{closure::Closure, JsCast};
 use web_sys::{js_sys::Function, window, Event, KeyboardEvent, MouseEvent};
 use yew::{
-    function_component, html, use_context, use_effect_with, virtual_dom::VNode, Callback, Html,
-    Properties,
+    function_component, html, use_context, use_effect_with, use_memo, use_state,
+    virtual_dom::VNode, Callback, Html, Properties,
 };
 
 use crate::{
     components::{end::End, game::Game},
     context::{Context, State},
     i18n::{TranslationMap, I18N},
+    irregular_verb::GermanVerb,
 };
 
 const ONKEYDOWN_EVENT_NAME: &str = "keydown";
@@ -80,16 +82,21 @@ pub fn body() -> Html {
     let context = use_context::<Rc<Context>>().unwrap();
     let translations = &context.translations;
     let locale = context.locale.as_ref().cloned();
-    let state_setter = context.state.setter();
+    let state = use_state(State::default);
+    let state_setter = state.setter();
     let errors = context.errors.clone();
-    let verbs = &context.verbs;
+    let verbs = use_memo((), |_| {
+        let mut verbs = GermanVerb::get_verbs();
+        verbs.shuffle(&mut rand::thread_rng());
+        verbs
+    });
 
-    let component: VNode = match *context.state {
+    let component: VNode = match *state {
         State::Welcome => {
             html! {<WelcomeBody {translations} onclick={move |_| {state_setter.set(State::Game)}} />}
         }
         State::Game => html! { <Game {translations}  {locale} {state_setter} {errors} {verbs} />},
-        State::End => html! { <End {translations} {locale} {errors} /> },
+        State::End => html! { <End {translations} {locale} {errors} {state_setter} /> },
     };
 
     html! {

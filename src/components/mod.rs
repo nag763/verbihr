@@ -32,10 +32,7 @@ pub mod header {
     use web_sys::{Event, HtmlSelectElement, MouseEvent};
     use yew::{function_component, html, use_context, Callback, Html, NodeRef};
 
-    use crate::{
-        context::{Context, State},
-        i18n::Locale,
-    };
+    use crate::{context::Context, i18n::Locale};
 
     #[function_component(Header)]
     pub fn header() -> Html {
@@ -61,7 +58,6 @@ pub mod header {
         };
 
         let context = use_context::<Rc<Context>>().unwrap();
-        let state_setter = context.state.setter();
 
         let user_locale = &context.locale;
         let select_ref = NodeRef::default();
@@ -94,7 +90,7 @@ pub mod header {
 
         html! {
             <nav class="flex items-center justify-between px-2 sm:px-4 md:px-6 h-py-1 sm:py-2 md:py-4 h-full">
-            <div class="text-white font-bold text-xl" onclick={move |_| state_setter.set(State::default())}>{"Verbihr"}</div>
+            <div class="text-white font-bold text-xl">{"Verbihr"}</div>
             <div class="flex space-x-4">
             <div {onclick} class="w-6 h-6 text-black transform transition-transform duration-300 hover:rotate-180">
                 if *context.dark_mode {

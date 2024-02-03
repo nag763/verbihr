@@ -147,8 +147,13 @@ pub fn game(props: &GameProperties) -> Html {
         );
         let verb = verb.clone();
         let state_setter = state_setter.clone();
-        let errors_setter = errors.setter();
         let translations = translations.clone();
+        let given_value = given_value.clone();
+
+        let focus_input = focus_input.clone();
+        let errors = errors.clone();
+        let verb = verb.clone();
+        let index = index.clone();
         move |_: Event| {
             if let (
                 Some(infinitiv_ref),
@@ -191,7 +196,14 @@ pub fn game(props: &GameProperties) -> Html {
                 if let Some(first_ref_in_error) = first_ref_in_error {
                     first_ref_in_error.focus().unwrap();
                     first_ref_in_error.report_validity();
-                    errors_setter.set(vec![verb.clone()]);
+                    errors.set(
+                        (*errors)
+                            .to_vec()
+                            .iter()
+                            .chain(vec![verb.clone()].iter())
+                            .cloned()
+                            .collect(),
+                    );
                 } else {
                     all_ref.iter().for_each(|html_ref| {
                         html_ref.set_value("");
@@ -221,6 +233,7 @@ pub fn game(props: &GameProperties) -> Html {
             preterit_ref.clone(),
             partizip_ii_ref.clone(),
         );
+
         move |_| {
             if let (
                 Some(infinitiv_ref),
@@ -273,6 +286,68 @@ pub fn game(props: &GameProperties) -> Html {
         }
     };
 
+    let giveup = {
+        let (infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref) = (
+            infinitiv_ref.clone(),
+            prasens_ich_ref.clone(),
+            prasens_er_ref.clone(),
+            preterit_ref.clone(),
+            partizip_ii_ref.clone(),
+        );
+        let state_setter = state_setter.clone();
+        let errors = errors.clone();
+        let given_value = given_value.clone();
+        let index = index.clone();
+        let focus_input = focus_input.clone();
+        let verb = verb.clone();
+        move |_e: MouseEvent| {
+            if let (
+                Some(infinitiv_ref),
+                Some(prasens_ich_ref),
+                Some(prasens_er_ref),
+                Some(preterit_ref),
+                Some(partizip_ii_ref),
+            ) = (
+                infinitiv_ref.cast::<HtmlInputElement>(),
+                prasens_ich_ref.cast::<HtmlInputElement>(),
+                prasens_er_ref.cast::<HtmlInputElement>(),
+                preterit_ref.cast::<HtmlInputElement>(),
+                partizip_ii_ref.cast::<HtmlInputElement>(),
+            ) {
+                let all_ref = [
+                    &infinitiv_ref,
+                    &prasens_ich_ref,
+                    &prasens_er_ref,
+                    &preterit_ref,
+                    &partizip_ii_ref,
+                ];
+                all_ref.iter().for_each(|html_ref| {
+                    html_ref.set_value("");
+                    html_ref.set_disabled(false);
+                    html_ref.set_class_name("table-input");
+                    html_ref.set_onchange(None);
+                    html_ref.set_custom_validity("");
+                });
+                let next_index = *index + 1;
+                errors.set(
+                    (*errors)
+                        .to_vec()
+                        .iter()
+                        .chain(vec![verb.clone()].iter())
+                        .cloned()
+                        .collect(),
+                );
+                if next_index < number_of_verbs {
+                    index.set(*index + 1);
+                    given_value.set(rand::thread_rng().gen_range(0u8..5u8));
+                    focus_input(*given_value);
+                } else {
+                    state_setter.set(State::End);
+                }
+            }
+        }
+    };
+
     html! {
     <>
         <div class="flex flex-col space-y-4 justify-between h-full">
@@ -308,18 +383,22 @@ pub fn game(props: &GameProperties) -> Html {
                     <I18N label={"error_number"} {translations}/> {" : "} {errors_val.len()}
                 </p>
 
-                <div class="flex space-x-3 items-center justify-center">
-                    <button onclick={clear_inputs} class="bg-gray-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-500 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
-                        <span><I18N label={"clear_inputs"} {translations}/></span>
-                    </button>
+                <div class="flex flex-row-reverse space-x-3 space-x-reverse items-center justify-center">
                     <button onclick={onvalidate} class="bg-green-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-green-500 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
                         <span><I18N label={"validate"} {translations}/></span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                     </button>
+                    <button onclick={clear_inputs} class="bg-gray-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-500 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
+                        <span><I18N label={"clear_inputs"} {translations}/></span>
+                    </button>
+
                 </div>
                 <div class="flex space-x-3 items-center justify-center">
+                    <button onclick={giveup} class="bg-yellow-500 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-yellow-400 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
+                        <span><I18N label={"give_up"} {translations}/></span>
+                    </button>
                     <button onclick={stop_here} class="bg-rose-500 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-rose-400 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
                         <span><I18N label={"stop_here"} {translations}/></span>
                     </button>

@@ -13,6 +13,11 @@ locales:
       clear_inputs: Clear
       error_number: Number of errors
       stop_here: Stop here
+      give_up: Give up
+      end_reached: You reached the end
+      end_mistakes: It seems like you did some mistakes, but no worry, it is part of the learning process.
+      end_perfect: You didn't do any mistake, it seems like German verbs have no secrets for you anymore!
+      restart: Restart
   - fr:
     short_name: fr
     long_name: Français
@@ -28,3 +33,28 @@ locales:
       field_error: Ce champ n'est pas correct
       error_number: Nombre d'erreurs 
       stop_here: S'arrêter
+      give_up: Abandonner
+      end_reached: Vous avez atteint la fin
+      end_mistakes: Il semble que vous ayez fait quelques erreurs, mais ne vous inquiétez pas, cela fait partie du processus d'apprentissage.
+      end_perfect: Vous n'avez commis aucune erreur, il semble que les verbes allemands n'aient plus de secrets pour vous !
+      restart: Recommencer
+  - de:
+    short_name: de
+    long_name: Deutsches
+    navigator_names: [de, de_DE, de_AT, de_CH]
+    is_default: false
+    translations:
+      all_rights_reserved: Alle Rechte vorbehalten.
+      footer: Das Anwendungsfenster ist unter der Creative Commons Namensnennung 4.0 Lizenz bereitgestellt. Freuet euch an, es zu teilen und für non-profit-Zwecke zu verwenden, sofern Sie die angemessenen Angaben machen.
+      intro: Dieses Anwendungsfenster ist speziell da, um Ihnen bei der Lernung der unregelmäßigen deutschen Verben zu helfen und eine wertvolle Ressource für das Meistern dieses essentiellen Aspektes der deutschen Sprache zu sein.
+      start: Starten
+      validate: Überprüfen
+      field_error: Das Feld ist nicht korrekt
+      clear_inputs: Leere Eingaben löschen
+      error_number: Anzahl der Fehler
+      stop_here: Hier aufhalten
+      give_up: Aufgeben
+      end_reached: Sie haben das Ende erreicht
+      end_mistakes: Es scheint, dass Sie einige Fehler gemacht haben, aber keine Sorge, das gehört zum Lernprozess dazu.
+      end_perfect: Sie haben keinen Fehler gemacht, es sieht so aus, als hätten deutsche Verben keine Geheimnisse mehr für Sie!
+      restart: Neustart

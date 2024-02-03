@@ -1,14 +1,12 @@
 use std::rc::Rc;
 
-use rand::seq::SliceRandom;
 use yew::{
     classes, function_component, html, use_memo, use_state, ContextProvider, Html, UseStateHandle,
 };
 
 use crate::components::prelude::*;
-use crate::context::{Context, State};
+use crate::context::Context;
 use crate::i18n::Locale;
-use crate::irregular_verb::GermanVerb;
 use crate::utils::get_navigator_languages;
 
 #[function_component(App)]
@@ -40,19 +38,11 @@ pub fn app() -> Html {
 
     let dark_mode_val = *dark_mode;
 
-    let state = use_state(State::default);
-
     let context = Rc::new(Context {
         locale,
         dark_mode,
         translations,
-        state,
         errors: use_state(Vec::new),
-        verbs: {
-            let mut verbs = GermanVerb::get_verbs();
-            verbs.shuffle(&mut rand::thread_rng());
-            Rc::new(verbs)
-        },
     });
 
     html! {
