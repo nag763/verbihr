@@ -47,7 +47,7 @@ pub fn welcome_body(props: &WelcomeBodyProps) -> Html {
     use_effect_with(onkeydown, move |onkeydown| {
         let window = window().unwrap();
         window
-            .add_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, &onkeydown)
+            .add_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, onkeydown)
             .unwrap();
         {
             let onkeydown = onkeydown.clone();

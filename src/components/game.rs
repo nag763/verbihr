@@ -23,7 +23,7 @@ fn check_values_and_modify(input: &HtmlInputElement, expected_value: &str) -> bo
             input.set_class_name("table-input-validated");
             input.set_custom_validity("");
         };
-        if !value.eq_ignore_ascii_case(&expected_value) {
+        if !value.eq_ignore_ascii_case(expected_value) {
             let onchange: Function = {
                 let input = input.clone();
                 let expected_value = expected_value.to_string();
@@ -39,7 +39,7 @@ fn check_values_and_modify(input: &HtmlInputElement, expected_value: &str) -> bo
             input.set_custom_validity(&format!("Not good expected {expected_value}"));
             false
         } else {
-            on_valid(&input);
+            on_valid(input);
             true
         }
     } else {
@@ -73,7 +73,7 @@ pub fn game(props: &GameProperties) -> Html {
 
     let index = use_state(|| 0);
     let index_val = *index;
-    let given_value = use_state(|| (&mut rand::thread_rng()).gen_range(0u8..5u8));
+    let given_value = use_state(|| rand::thread_rng().gen_range(0u8..5u8));
 
     let displayed_field = *given_value;
 
@@ -184,7 +184,7 @@ pub fn game(props: &GameProperties) -> Html {
                     let next_index = *index + 1;
                     if next_index < number_of_verbs {
                         index.set(*index + 1);
-                        given_value.set((&mut rand::thread_rng()).gen_range(0u8..5u8));
+                        given_value.set(rand::thread_rng().gen_range(0u8..5u8));
                         focus_input(*given_value);
                     } else {
                         state_setter.set(State::Welcome);
