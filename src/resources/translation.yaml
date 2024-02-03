@@ -58,3 +58,80 @@ locales:
       end_mistakes: Es scheint, dass Sie einige Fehler gemacht haben, aber keine Sorge, das gehört zum Lernprozess dazu.
       end_perfect: Sie haben keinen Fehler gemacht, es sieht so aus, als hätten deutsche Verben keine Geheimnisse mehr für Sie!
       restart: Neustart
+  - es:
+    short_name: es
+    long_name: Español
+    navigator_names: [es, es_ES, es_MX]
+    is_default: false
+    translations:
+      all_rights_reserved: Todos los derechos reservados.
+      footer: Este trabajo está licenciado bajo una Licencia Creative Commons Atribución-NoComercial 4.0. Siéntase libre de compartirlo y usarlo con fines no comerciales con la atribución adecuada.
+      intro: Esta aplicación está diseñada para ayudar en el aprendizaje de los verbos irregulares alemanes, proporcionando un recurso valioso para dominar este aspecto esencial del idioma alemán.
+      start: Comenzar
+      validate: Validar
+      clear_inputs: Limpiar
+      error_number: Número de errores
+      stop_here: Detenerse
+      give_up: Rendirse
+      end_reached: Has llegado al final
+      end_mistakes: Parece que cometiste algunos errores, pero no te preocupes, es parte del proceso de aprendizaje.
+      end_perfect: No cometiste ningún error, ¡parece que los verbos alemanes no tienen secretos para ti!
+      restart: Reiniciar
+  - ru:
+    short_name: ru
+    long_name: Русский
+    navigator_names: [ru, ru_RU]
+    is_default: false
+    translations:
+      all_rights_reserved: Все права защищены.
+      footer: Эта работа лицензирована по лицензии Creative Commons Attribution-NonCommercial 4.0. Не стесняйтесь делиться и использовать ее в некоммерческих целях с правильным указанием авторства.
+      intro: Это приложение разработано для помощи в изучении неправильных глаголов немецкого языка, предоставляя ценный ресурс для освоения этого важного аспекта немецкого языка.
+      start: Начать
+      validate: Подтвердить
+      field_error: Это поле заполнено неверно
+      clear_inputs: Очистить
+      error_number: Количество ошибок
+      stop_here: Остановиться
+      give_up: Сдаться
+      end_reached: Вы достигли конца
+      end_mistakes: Похоже, что вы допустили несколько ошибок, но не беспокойтесь, это часть процесса обучения.
+      end_perfect: Вы не совершили ни одной ошибки, похоже, что немецкие глаголы больше не являются для вас тайной!
+      restart: Перезапустить
+  - ja:
+    short_name: ja
+    long_name: 日本語
+    navigator_names: [ja, ja_JP]
+    is_default: false
+    translations:
+      all_rights_reserved: 全著作権所有。
+      footer: この作業はクリエイティブコモンズ表示-非営利4.0ライセンスの下でライセンスされています。適切な帰属をして非営利目的で共有および使用してください。
+      intro: このアプリケーションは、ドイツ語の不規則な動詞の学習を支援するために設計され、ドイツ語の言語のこの重要な側面をマスターするための貴重なリソースを提供します。
+      start: 開始
+      validate: 確認
+      clear_inputs: クリア
+      error_number: エラーの数
+      stop_here: ここで停止
+      give_up: 諦める
+      end_reached: 終了しました
+      end_mistakes: いくつかのミスがあるようですが、心配いりません。これは学習プロセスの一部です。
+      end_perfect: どの間違いもありません。ドイツの動詞はもうあなたには秘密がありません！
+      restart: 再起動
+  - zh:
+    short_name: zh
+    long_name: 中文
+    navigator_names: [zh, zh_CN, zh_TW]
+    is_default: false
+    translations:
+      all_rights_reserved: 版权所有。
+      footer: 本作品根据知识共享署名-非商业4.0许可证授权。请随时在适当归属的情况下共享和用于非营利目的。
+      intro: 本应用程序旨在协助学习德语不规则动词，为掌握德语语言的这一重要方面提供了宝贵的资源。
+      start: 开始
+      validate: 验证
+      clear_inputs: 清除
+      error_number: 错误数量
+      stop_here: 到此为止
+      give_up: 放弃
+      end_reached: 你到达了尽头
+      end_mistakes: 似乎你犯了一些错误，但别担心，这是学习过程的一部分。
+      end_perfect: 你没有犯任何错误，看起来德语动词对你来说已经没有秘密了！
+      restart: 重新开始

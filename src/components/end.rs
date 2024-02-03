@@ -87,9 +87,37 @@ pub fn end(props: &EndProperties) -> Html {
                     </h2>
                 </div>
                 if !errors_val.is_empty() {
-                    <div>
-                        <I18N label={"error_number"} {translations}/> {" : "} {errors_val.len()}
-                    </div>
+                    <div class="flex flex-col space-y-2 items-center justify-center overflow-scroll">
+
+                        <h2 class="text-xl md:text-md">
+                            <I18N label={"error_number"} {translations}/> {" : "} {errors_val.len()}
+                        </h2>
+                        <div  >
+                            <table>
+                                <thead>
+                                    <th>{"Infinitiv"}</th>
+                                    <th>{"Präsens (ich)"}</th>
+                                    <th>{"Präsens (er)"}</th>
+                                    <th>{"Preterit   "}</th>
+                                    <th>{"Partizip II"}</th>
+                                </thead>
+                                <tbody>
+                                {errors_val.iter().map(|v| {
+                                    html!{
+                                        <tr>
+                                            <td>{&v.infinitiv}</td>
+                                            <td>{&v.prasens_ich}</td>
+                                            <td>{&v.prasens_er}</td>
+                                            <td>{&v.preterit}</td>
+                                            <td>{&v.partizip_ii}</td>
+                                        </tr>
+                                    }
+                                }).collect::<Html>()}
+
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
                 }
 
                 <div class="flex items-center justify-center">
