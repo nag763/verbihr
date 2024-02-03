@@ -10,7 +10,9 @@ locales:
       intro: This application is designed to assist in the learning of German irregular verbs, providing a valuable resource for mastering this essential aspect of the German language.
       start: Start
       validate: Validate
-      field_error: This field is not correct
+      clear_inputs: Clear
+      error_number: Number of errors
+      stop_here: Stop here
   - fr:
     short_name: fr
     long_name: Français
@@ -22,4 +24,7 @@ locales:
       intro: Cette application est conçue pour aider à l'apprentissage des verbes irréguliers allemands, fournissant une ressource précieuse pour maîtriser cet aspect essentiel de la langue allemande.
       start: Démarrer
       validate: Valider
+      clear_inputs: Nettoyer les champs
       field_error: Ce champ n'est pas correct
+      error_number: Nombre d'erreurs 
+      stop_here: S'arrêter

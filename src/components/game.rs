@@ -1,11 +1,11 @@
 use std::rc::Rc;
 
-use rand::{seq::SliceRandom, Rng};
+use rand::Rng;
 use wasm_bindgen::{closure::Closure, JsCast};
-use web_sys::{js_sys::Function, Event, HtmlInputElement};
+use web_sys::{js_sys::Function, Event, HtmlInputElement, MouseEvent, SubmitEvent};
 use yew::{
     function_component, html, use_effect_with, use_memo, use_state, Html, NodeRef, Properties,
-    UseStateSetter,
+    UseStateHandle, UseStateSetter,
 };
 
 use crate::{
@@ -14,7 +14,11 @@ use crate::{
     irregular_verb::GermanVerb,
 };
 
-fn check_values_and_modify(input: &HtmlInputElement, expected_value: &str) -> bool {
+fn check_values_and_modify(
+    input: &HtmlInputElement,
+    expected_value: &str,
+    translations: &Rc<Option<TranslationMap>>,
+) -> bool {
     if !input.disabled() {
         let value = input.value();
         let on_valid = |input: &HtmlInputElement| {
@@ -36,7 +40,15 @@ fn check_values_and_modify(input: &HtmlInputElement, expected_value: &str) -> bo
                 closure.into_js_value().unchecked_into()
             };
             input.set_onchange(Some(&onchange));
-            input.set_custom_validity(&format!("Not good expected {expected_value}"));
+            if let Some(translations) = translations.as_ref() {
+                input.set_custom_validity(
+                    translations
+                        .get("field_error")
+                        .unwrap_or(&"field_error".to_string()),
+                );
+            } else {
+                input.set_custom_validity("This is not the expected value");
+            }
             false
         } else {
             on_valid(input);
@@ -54,6 +66,9 @@ pub struct GameProperties {
     #[prop_or_default]
     pub locale: Option<Locale>,
     pub state_setter: UseStateSetter<State>,
+    pub errors: UseStateHandle<Vec<GermanVerb>>,
+    #[prop_or_default]
+    pub verbs: Rc<Vec<GermanVerb>>,
 }
 
 #[function_component(Game)]
@@ -62,6 +77,7 @@ pub fn game(props: &GameProperties) -> Html {
     let locale = &props.locale;
     let default_locale = Locale::get_default_locale();
     let state_setter = &props.state_setter;
+    let verbs = &props.verbs;
 
     let (infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref) = (
         NodeRef::default(),
@@ -72,7 +88,11 @@ pub fn game(props: &GameProperties) -> Html {
     );
 
     let index = use_state(|| 0);
+    let errors = &props.errors;
+
     let index_val = *index;
+    let errors_val = errors.to_vec();
+
     let given_value = use_state(|| rand::thread_rng().gen_range(0u8..5u8));
 
     let displayed_field = *given_value;
@@ -93,14 +113,11 @@ pub fn game(props: &GameProperties) -> Html {
         }
     };
 
-    let verbs = {
-        let mut verbs = GermanVerb::get_verbs();
-        verbs.shuffle(&mut rand::thread_rng());
-        verbs
-    };
     let number_of_verbs = verbs.len();
 
-    let verb = use_memo((verbs, *index), |(verbs, index)| verbs.get(*index).cloned());
+    let verb = use_memo((verbs.clone(), *index), |(verbs, index)| {
+        verbs.get(*index).cloned()
+    });
     let Some(verb) = verb.as_ref() else {
         state_setter.set(State::Welcome);
         return html! {<></>};
@@ -113,14 +130,14 @@ pub fn game(props: &GameProperties) -> Html {
         None
     };
 
-    {
+    use_effect_with(displayed_field, {
         let focus_input = focus_input.clone();
-        use_effect_with(displayed_field, move |_| {
+        move |_| {
             focus_input(displayed_field);
-        });
-    }
+        }
+    });
 
-    let onsubmit = {
+    let submit_event = {
         let (infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref) = (
             infinitiv_ref.clone(),
             prasens_ich_ref.clone(),
@@ -130,7 +147,9 @@ pub fn game(props: &GameProperties) -> Html {
         );
         let verb = verb.clone();
         let state_setter = state_setter.clone();
-        move |_| {
+        let errors_setter = errors.setter();
+        let translations = translations.clone();
+        move |_: Event| {
             if let (
                 Some(infinitiv_ref),
                 Some(prasens_ich_ref),
@@ -144,7 +163,6 @@ pub fn game(props: &GameProperties) -> Html {
                 preterit_ref.cast::<HtmlInputElement>(),
                 partizip_ii_ref.cast::<HtmlInputElement>(),
             ) {
-                gloo_console::log!("Submit recorded");
                 let mut first_ref_in_error: Option<&HtmlInputElement> = None;
                 let all_ref = [
                     &infinitiv_ref,
@@ -154,25 +172,26 @@ pub fn game(props: &GameProperties) -> Html {
                     &partizip_ii_ref,
                 ];
 
-                if !check_values_and_modify(&partizip_ii_ref, &verb.partizip_ii) {
+                if !check_values_and_modify(&partizip_ii_ref, &verb.partizip_ii, &translations) {
                     first_ref_in_error = Some(&partizip_ii_ref);
                 }
-                if !check_values_and_modify(&preterit_ref, &verb.preterit) {
+                if !check_values_and_modify(&preterit_ref, &verb.preterit, &translations) {
                     first_ref_in_error = Some(&preterit_ref);
                 }
-                if !check_values_and_modify(&prasens_er_ref, &verb.prasens_er) {
+                if !check_values_and_modify(&prasens_er_ref, &verb.prasens_er, &translations) {
                     first_ref_in_error = Some(&prasens_er_ref);
                 }
-                if !check_values_and_modify(&prasens_ich_ref, &verb.prasens_ich) {
+                if !check_values_and_modify(&prasens_ich_ref, &verb.prasens_ich, &translations) {
                     first_ref_in_error = Some(&prasens_ich_ref);
                 }
-                if !check_values_and_modify(&infinitiv_ref, &verb.infinitiv) {
+                if !check_values_and_modify(&infinitiv_ref, &verb.infinitiv, &translations) {
                     first_ref_in_error = Some(&infinitiv_ref);
                 }
 
                 if let Some(first_ref_in_error) = first_ref_in_error {
                     first_ref_in_error.focus().unwrap();
                     first_ref_in_error.report_validity();
+                    errors_setter.set(vec![verb.clone()]);
                 } else {
                     all_ref.iter().for_each(|html_ref| {
                         html_ref.set_value("");
@@ -187,10 +206,70 @@ pub fn game(props: &GameProperties) -> Html {
                         given_value.set(rand::thread_rng().gen_range(0u8..5u8));
                         focus_input(*given_value);
                     } else {
-                        state_setter.set(State::Welcome);
+                        state_setter.set(State::End);
                     }
                 }
             }
+        }
+    };
+
+    let clear_inputs = {
+        let (infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref) = (
+            infinitiv_ref.clone(),
+            prasens_ich_ref.clone(),
+            prasens_er_ref.clone(),
+            preterit_ref.clone(),
+            partizip_ii_ref.clone(),
+        );
+        move |_| {
+            if let (
+                Some(infinitiv_ref),
+                Some(prasens_ich_ref),
+                Some(prasens_er_ref),
+                Some(preterit_ref),
+                Some(partizip_ii_ref),
+            ) = (
+                infinitiv_ref.cast::<HtmlInputElement>(),
+                prasens_ich_ref.cast::<HtmlInputElement>(),
+                prasens_er_ref.cast::<HtmlInputElement>(),
+                preterit_ref.cast::<HtmlInputElement>(),
+                partizip_ii_ref.cast::<HtmlInputElement>(),
+            ) {
+                let all_ref = [
+                    &infinitiv_ref,
+                    &prasens_ich_ref,
+                    &prasens_er_ref,
+                    &preterit_ref,
+                    &partizip_ii_ref,
+                ];
+
+                for html_ref in all_ref {
+                    if !html_ref.disabled() {
+                        html_ref.set_value("");
+                    }
+                }
+            }
+        }
+    };
+
+    let stop_here = {
+        let state_setter = state_setter.clone();
+        move |_| {
+            state_setter.set(State::End);
+        }
+    };
+
+    let onsubmit = {
+        let onsubmit = submit_event.clone();
+        move |e: SubmitEvent| {
+            onsubmit(e.into());
+        }
+    };
+
+    let onvalidate = {
+        let onsubmit = submit_event.clone();
+        move |e: MouseEvent| {
+            onsubmit(e.into());
         }
     };
 
@@ -212,7 +291,7 @@ pub fn game(props: &GameProperties) -> Html {
                     <p>{"Preterit   "}</p>
                     <p>{"Partizip II"}</p>
                 </div>
-                <form class="flex space-x-2 justify-evenly w-full" action="javascript:void(0);" {onsubmit}>
+                <form class="flex space-x-2 justify-evenly w-full" method="POST" action="javascript:void(0);" {onsubmit}>
                     <input autocomplete="off" ref={infinitiv_ref} required=true disabled={displayed_field == 0} type="text" name="infinitiv" placeholder=" " value={(displayed_field == 0).then(|| verb.infinitiv.clone())} class="table-input"/>
                     <input autocomplete="off" ref={prasens_ich_ref} required=true disabled={displayed_field == 1} type="text" name="prasens_ich" placeholder=" " value={(displayed_field == 1).then(|| verb.prasens_ich.clone())} autofocus={displayed_field != 0} class="table-input"/>
                     <input autocomplete="off" ref={prasens_er_ref} required=true disabled={displayed_field == 2} type="text" name="prasens_er" placeholder=" " value={(displayed_field == 2).then(|| verb.prasens_er.clone())} class="table-input"/>
@@ -224,13 +303,27 @@ pub fn game(props: &GameProperties) -> Html {
 
             </form>
 
-            <div class="flex items-center justify-center">
-            <button class="bg-green-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-green-500 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
-                <span><I18N label={"validate"} {translations}/></span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-            </button>
+            <div class="flex flex-col">
+                <p>
+                    <I18N label={"error_number"} {translations}/> {" : "} {errors_val.len()}
+                </p>
+
+                <div class="flex space-x-3 items-center justify-center">
+                    <button onclick={clear_inputs} class="bg-gray-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-500 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
+                        <span><I18N label={"clear_inputs"} {translations}/></span>
+                    </button>
+                    <button onclick={onvalidate} class="bg-green-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-green-500 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
+                        <span><I18N label={"validate"} {translations}/></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex space-x-3 items-center justify-center">
+                    <button onclick={stop_here} class="bg-rose-500 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-rose-400 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
+                        <span><I18N label={"stop_here"} {translations}/></span>
+                    </button>
+                </div>
             </div>
         </div>
     </>
