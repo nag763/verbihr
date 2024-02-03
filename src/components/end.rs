@@ -87,7 +87,7 @@ pub fn end(props: &EndProperties) -> Html {
                     </h2>
                 </div>
                 if !errors_val.is_empty() {
-                    <div class="flex flex-col space-y-2 items-center justify-center overflow-scroll">
+                    <div class="flex flex-col space-y-2 items-center justify-center dark:text-white overflow-scroll">
 
                         <h2 class="text-xl md:text-md">
                             <I18N label={"error_number"} {translations}/> {" : "} {errors_val.len()}

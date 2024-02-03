@@ -18,13 +18,13 @@ opt-level = "z"
 gloo-console = "0.3.0"
 postcard = { version = "1.0.8"}
 rand = "0.8.5"
-serde = { version = "1.0.193", features = ["derive"] }
-wasm-bindgen = "0.2.89"
+serde = { version = "1.0.196", features = ["derive"] }
+wasm-bindgen = "0.2.90"
 web-sys = { version = "0.3.67", features = ["Navigator", "MediaQueryList", "Window", "HtmlSelectElement", "HtmlInputElement"] }
 yew = { version = "0.21.0", features = ["csr"] }
 
 [build-dependencies]
-serde_yaml = "0.9.29"
-serde = { version = "1.0.193", features = ["derive"] }
-anyhow = "1.0.77"
+serde_yaml = "0.9.31"
+serde = { version = "1.0.196", features = ["derive"] }
+anyhow = "1.0.79"
 postcard = { version = "1.0.8", features = ["use-std"] }
