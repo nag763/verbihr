@@ -15,16 +15,16 @@ panic = "abort"
 opt-level = "z" 
 
 [dependencies]
-derive_more = "0.99.17"
 gloo-console = "0.3.0"
 postcard = { version = "1.0.8"}
-serde = { version = "1.0.192", features = ["derive"] }
-wasm-bindgen = "0.2.88"
-web-sys = { version = "0.3.65", features = ["Navigator", "MediaQueryList", "Window", "HtmlSelectElement"] }
+rand = "0.8.5"
+serde = { version = "1.0.193", features = ["derive"] }
+wasm-bindgen = "0.2.89"
+web-sys = { version = "0.3.67", features = ["Navigator", "MediaQueryList", "Window", "HtmlSelectElement", "HtmlInputElement"] }
 yew = { version = "0.21.0", features = ["csr"] }
 
 [build-dependencies]
-serde_yaml = "0.9.27"
-serde = { version = "1.0.192", features = ["derive"] }
-anyhow = "1.0.75"
+serde_yaml = "0.9.29"
+serde = { version = "1.0.193", features = ["derive"] }
+anyhow = "1.0.77"
 postcard = { version = "1.0.8", features = ["use-std"] }

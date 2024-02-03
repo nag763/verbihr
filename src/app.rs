@@ -5,7 +5,7 @@ use yew::{
 };
 
 use crate::components::prelude::*;
-use crate::context::Context;
+use crate::context::{Context, State};
 use crate::i18n::Locale;
 use crate::utils::get_navigator_languages;
 
@@ -38,10 +38,13 @@ pub fn app() -> Html {
 
     let dark_mode_val = *dark_mode;
 
+    let state = use_state(State::default);
+
     let context = Rc::new(Context {
         locale,
         dark_mode,
         translations,
+        state,
     });
 
     html! {

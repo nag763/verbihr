@@ -14,7 +14,7 @@ workspace = false
 
 
 [tasks.build-release-assets]
-args = ["tailwindcss@3.3.0", "-i", "main.css", "-o", "release/assets/tailwind.css", "-c", "tailwind.config.js", "src/"]
+args = ["tailwindcss@3.3.0", "-i", "main.css", "-o", "release/assets/tailwind.css", "-c", "tailwind.config.js", "src/", "--minify"]
 command = "npx"
 workspace = false
 

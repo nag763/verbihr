@@ -5,6 +5,7 @@ pub mod app;
 pub mod components;
 pub mod context;
 pub mod i18n;
+pub mod irregular_verb;
 pub mod utils;
 
 #[wasm_bindgen(start)]

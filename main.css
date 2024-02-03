@@ -4,6 +4,10 @@
 
 @layer components {
     .table-input {
-        @apply bg-inherit w-full border-b-2 border-slate-400 dark:border-gray-800 focus:border-indigo-500 dark:focus:border-indigo-500 focus:outline-none text-center caret-indigo-500;
+        @apply bg-inherit w-full border-b-2 border-slate-400 dark:border-gray-800 focus:border-indigo-500 disabled:font-bold dark:focus:border-indigo-500 focus:outline-none text-center caret-indigo-500 border-green-500 invalid:[&:not(:placeholder-shown)]:border-rose-500;
+    }
+    
+    .table-input-validated {
+        @apply table-input border-green-500 dark:border-green-500;
     }
 }
