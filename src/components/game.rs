@@ -438,8 +438,8 @@ pub fn game(props: &GameProperties) -> Html {
                 }
 
                 <div class="flex flex-row-reverse space-x-3 space-x-reverse items-center justify-center">
-                    <button onclick={onvalidate} class="bg-green-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-green-500 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
-                        <span><I18N label={"validate"} {translations}/></span>
+                    <button onclick={onvalidate} class="bg-green-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-green-500 transition duration-300 w-2/3 md:w-1/3 h-1/6 overflow-hidden truncate" >
+                        <I18N label={"validate"} {translations}/>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
