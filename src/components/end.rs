@@ -73,7 +73,7 @@ pub fn end(props: &EndProperties) -> Html {
 
     html! {
         <>
-            <div class="flex flex-col space-y-4 justify-between h-full">
+            <div class="flex flex-col max-h-full space-y-4 justify-between h-full">
                 <div>
                     <h1 class="text-2xl md:text-4xl font-bold mb-4">
                         <I18N label={"end_reached"} {translations}/>
@@ -87,13 +87,13 @@ pub fn end(props: &EndProperties) -> Html {
                     </h2>
                 </div>
                 if !errors_val.is_empty() {
-                    <div class="flex flex-col items-center justify-center dark:text-white overflow-auto">
+                    <div class="flex flex-col max-h-full items-center justify-center dark:text-white ">
 
                         <h2 class="text-xl md:text-md">
                             <I18N label={"error_number"} {translations}/> {" : "} {errors_val.len()}
                         </h2>
-                        <div  >
-                            <table>
+                        <div class="max-h-full">
+                            <table class="border-separate border-spacing-2 dark:text-white">
                                 <thead>
                                     <th>{"Infinitiv"}</th>
                                     <th>{"Präsens (ich)"}</th>
