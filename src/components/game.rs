@@ -248,7 +248,7 @@ pub fn game(props: &GameProperties) -> Html {
                             (*errors)
                                 .to_vec()
                                 .iter()
-                                .chain(vec![verb.clone()].iter())
+                                .chain([verb.clone()].iter())
                                 .cloned()
                                 .collect(),
                         );
@@ -383,7 +383,7 @@ pub fn game(props: &GameProperties) -> Html {
                         (*errors)
                             .to_vec()
                             .iter()
-                            .chain(vec![verb.clone()].iter())
+                            .chain([verb.clone()].iter())
                             .cloned()
                             .collect(),
                     );
