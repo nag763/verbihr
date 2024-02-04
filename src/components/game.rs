@@ -2,11 +2,15 @@ use std::rc::Rc;
 
 use rand::Rng;
 use wasm_bindgen::{closure::Closure, JsCast};
-use web_sys::{js_sys::Function, Event, HtmlInputElement, MouseEvent, SubmitEvent};
+use web_sys::{
+    js_sys::Function, window, Event, HtmlInputElement, KeyboardEvent, MouseEvent, SubmitEvent,
+};
 use yew::{
     function_component, html, use_effect_with, use_memo, use_state, Html, NodeRef, Properties,
     UseStateHandle, UseStateSetter,
 };
+
+const ONKEYDOWN_EVENT_NAME: &str = "keydown";
 
 use crate::{
     context::State,
@@ -154,6 +158,49 @@ pub fn game(props: &GameProperties) -> Html {
         let errors = errors.clone();
         let verb = verb.clone();
         let index = index.clone();
+
+        let onkeydown: Function = {
+            let event = Box::new(move |keydown: KeyboardEvent| {
+                let insertable = if keydown.alt_key() {
+                    match keydown.key_code() {
+                        85 => Some('ü'),
+                        83 => Some('ß'),
+                        73 => Some('ï'),
+                        65 => Some('ä'),
+                        _ => None,
+                    }
+                } else {
+                    None
+                };
+                if let Some(insertable) = insertable {
+                    keydown.prevent_default();
+                    if let Some(target) = keydown.target() {
+                        if let Some(input) = target.dyn_ref::<HtmlInputElement>() {
+                            let input_val = input.value();
+                            input.set_value(&format!("{input_val}{insertable}"));
+                        }
+                    }
+                };
+            }) as Box<dyn FnMut(_)>;
+            let closure = Closure::wrap(event);
+            closure.into_js_value().unchecked_into()
+        };
+
+        use_effect_with(onkeydown, move |onkeydown| {
+            let window = window().unwrap();
+            window
+                .add_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, onkeydown)
+                .unwrap();
+            {
+                let onkeydown = onkeydown.clone();
+                move || {
+                    window
+                        .remove_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, &onkeydown)
+                        .unwrap();
+                }
+            }
+        });
+
         move |_: Event| {
             if let (
                 Some(infinitiv_ref),
@@ -196,14 +243,16 @@ pub fn game(props: &GameProperties) -> Html {
                 if let Some(first_ref_in_error) = first_ref_in_error {
                     first_ref_in_error.focus().unwrap();
                     first_ref_in_error.report_validity();
-                    errors.set(
-                        (*errors)
-                            .to_vec()
-                            .iter()
-                            .chain(vec![verb.clone()].iter())
-                            .cloned()
-                            .collect(),
-                    );
+                    if !(*errors).to_vec().contains(&verb) {
+                        errors.set(
+                            (*errors)
+                                .to_vec()
+                                .iter()
+                                .chain(vec![verb.clone()].iter())
+                                .cloned()
+                                .collect(),
+                        );
+                    }
                 } else {
                     all_ref.iter().for_each(|html_ref| {
                         html_ref.set_value("");
@@ -329,14 +378,16 @@ pub fn game(props: &GameProperties) -> Html {
                     html_ref.set_custom_validity("");
                 });
                 let next_index = *index + 1;
-                errors.set(
-                    (*errors)
-                        .to_vec()
-                        .iter()
-                        .chain(vec![verb.clone()].iter())
-                        .cloned()
-                        .collect(),
-                );
+                if !(*errors).to_vec().contains(&verb) {
+                    errors.set(
+                        (*errors)
+                            .to_vec()
+                            .iter()
+                            .chain(vec![verb.clone()].iter())
+                            .cloned()
+                            .collect(),
+                    );
+                }
                 if next_index < number_of_verbs {
                     index.set(*index + 1);
                     given_value.set(rand::thread_rng().gen_range(0u8..5u8));
@@ -358,15 +409,15 @@ pub fn game(props: &GameProperties) -> Html {
                 }
             </div>
             <form>
-            <div class="border-separate  space-x-2  dark:text-white w-full h-full">
-                <div class="flex justify-evenly w-full text-center">
-                    <p>{"Infinitiv"}</p>
+            <div class="flex flex-row md:flex-col border-separate md:space-x-2 dark:text-white w-full h-full">
+                <div class="flex flex-col md:flex-row justify-evenly w-full text-center">
+                    <p>{"Infinitiv    "}</p>
                     <p>{"Präsens (ich)"}</p>
-                    <p>{"Präsens (er)"}</p>
-                    <p>{"Preterit   "}</p>
-                    <p>{"Partizip II"}</p>
+                    <p>{"Präsens (er) "}</p>
+                    <p>{"Preterit     "}</p>
+                    <p>{"Partizip II  "}</p>
                 </div>
-                <form class="flex space-x-2 justify-evenly w-full" method="POST" action="javascript:void(0);" {onsubmit}>
+                <form class="flex flex-col md:flex-row md:space-x-2 justify-evenly w-full" method="POST" action="javascript:void(0);" {onsubmit}>
                     <input autocomplete="off" ref={infinitiv_ref} required=true disabled={displayed_field == 0} type="text" name="infinitiv" placeholder=" " value={(displayed_field == 0).then(|| verb.infinitiv.clone())} class="table-input"/>
                     <input autocomplete="off" ref={prasens_ich_ref} required=true disabled={displayed_field == 1} type="text" name="prasens_ich" placeholder=" " value={(displayed_field == 1).then(|| verb.prasens_ich.clone())} autofocus={displayed_field != 0} class="table-input"/>
                     <input autocomplete="off" ref={prasens_er_ref} required=true disabled={displayed_field == 2} type="text" name="prasens_er" placeholder=" " value={(displayed_field == 2).then(|| verb.prasens_er.clone())} class="table-input"/>
@@ -379,9 +430,12 @@ pub fn game(props: &GameProperties) -> Html {
             </form>
 
             <div class="flex flex-col">
-                <p>
-                    <I18N label={"error_number"} {translations}/> {" : "} {errors_val.len()}
-                </p>
+
+                if !errors_val.is_empty() {
+                    <p>
+                        <I18N label={"error_number"} {translations}/> {" : "} {errors_val.len()}
+                    </p>
+                }
 
                 <div class="flex flex-row-reverse space-x-3 space-x-reverse items-center justify-center">
                     <button onclick={onvalidate} class="bg-green-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-green-500 transition duration-300 w-2/3 md:w-1/3 h-1/6" >

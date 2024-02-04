@@ -10,4 +10,8 @@
     .table-input-validated {
         @apply table-input border-green-500 dark:border-green-500;
     }
+
+    .common-kbd {
+        @apply  rounded-lg border bg-gray-600 text-gray-100 border-gray-500 font-semibold md:px-1 md:py-0.5;
+    }
 }

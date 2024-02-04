@@ -47,8 +47,8 @@ pub fn end(props: &EndProperties) -> Html {
     let onkeydown: Function = {
         let onkeydown = leaveevent.clone();
         let event = Box::new(move |keydown: KeyboardEvent| {
-            keydown.prevent_default();
             if keydown.key_code() == 13 {
+                keydown.prevent_default();
                 onkeydown.emit(keydown.into());
             }
         }) as Box<dyn FnMut(_)>;
@@ -87,7 +87,7 @@ pub fn end(props: &EndProperties) -> Html {
                     </h2>
                 </div>
                 if !errors_val.is_empty() {
-                    <div class="flex flex-col space-y-2 items-center justify-center dark:text-white overflow-scroll">
+                    <div class="flex flex-col space-y-2 items-center justify-center dark:text-white overflow-auto">
 
                         <h2 class="text-xl md:text-md">
                             <I18N label={"error_number"} {translations}/> {" : "} {errors_val.len()}

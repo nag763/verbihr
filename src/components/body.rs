@@ -37,8 +37,8 @@ pub fn welcome_body(props: &WelcomeBodyProps) -> Html {
     let onkeydown: Function = {
         let onclick = props.onclick.clone();
         let event = Box::new(move |keydown: KeyboardEvent| {
-            keydown.prevent_default();
             if keydown.key_code() == 13 {
+                keydown.prevent_default();
                 onclick.emit(keydown.into());
             }
         }) as Box<dyn FnMut(_)>;

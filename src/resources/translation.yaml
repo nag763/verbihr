@@ -18,6 +18,8 @@ locales:
       end_mistakes: It seems like you did some mistakes, but no worry, it is part of the learning process.
       end_perfect: You didn't do any mistake, it seems like German verbs have no secrets for you anymore!
       restart: Restart
+      help_modal_title: Help
+      keybindings: Keybindings
   - fr:
     short_name: fr
     long_name: Français
@@ -38,6 +40,8 @@ locales:
       end_mistakes: Il semble que vous ayez fait quelques erreurs, mais ne vous inquiétez pas, cela fait partie du processus d'apprentissage.
       end_perfect: Vous n'avez commis aucune erreur, il semble que les verbes allemands n'aient plus de secrets pour vous !
       restart: Recommencer
+      help_modal_title: Aide
+      keybindings: Raccourcis clavier
   - de:
     short_name: de
     long_name: Deutsches
@@ -58,6 +62,8 @@ locales:
       end_mistakes: Es scheint, dass Sie einige Fehler gemacht haben, aber keine Sorge, das gehört zum Lernprozess dazu.
       end_perfect: Sie haben keinen Fehler gemacht, es sieht so aus, als hätten deutsche Verben keine Geheimnisse mehr für Sie!
       restart: Neustart
+      help_modal_title: Hilfe
+      keybindings: Tastenkombinationen
   - es:
     short_name: es
     long_name: Español
@@ -77,6 +83,8 @@ locales:
       end_mistakes: Parece que cometiste algunos errores, pero no te preocupes, es parte del proceso de aprendizaje.
       end_perfect: No cometiste ningún error, ¡parece que los verbos alemanes no tienen secretos para ti!
       restart: Reiniciar
+      help_modal_title: Ayuda
+      keybindings: Combinaciones de teclas
   - ru:
     short_name: ru
     long_name: Русский
@@ -97,6 +105,8 @@ locales:
       end_mistakes: Похоже, что вы допустили несколько ошибок, но не беспокойтесь, это часть процесса обучения.
       end_perfect: Вы не совершили ни одной ошибки, похоже, что немецкие глаголы больше не являются для вас тайной!
       restart: Перезапустить
+      help_modal_title: Помощь
+      keybindings: Горячие клавиши
   - ja:
     short_name: ja
     long_name: 日本語
@@ -116,6 +126,8 @@ locales:
       end_mistakes: いくつかのミスがあるようですが、心配いりません。これは学習プロセスの一部です。
       end_perfect: どの間違いもありません。ドイツの動詞はもうあなたには秘密がありません！
       restart: 再起動
+      help_modal_title: ヘルプ
+      keybindings: キーバインディング
   - zh:
     short_name: zh
     long_name: 中文
@@ -135,3 +147,5 @@ locales:
       end_mistakes: 似乎你犯了一些错误，但别担心，这是学习过程的一部分。
       end_perfect: 你没有犯任何错误，看起来德语动词对你来说已经没有秘密了！
       restart: 重新开始
+      help_modal_title: 帮助
+      keybindings: 快捷键

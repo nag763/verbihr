@@ -4,6 +4,7 @@ use yew::{
     classes, function_component, html, use_memo, use_state, ContextProvider, Html, UseStateHandle,
 };
 
+use crate::components::modal::Modal;
 use crate::components::prelude::*;
 use crate::context::Context;
 use crate::i18n::Locale;
@@ -43,11 +44,12 @@ pub fn app() -> Html {
         dark_mode,
         translations,
         errors: use_state(Vec::new),
+        is_modal_open: use_state(|| true),
     });
 
     html! {
         <ContextProvider <Rc<Context>> {context}>
-            <div class={classes!( dark_mode_val.then_some("dark"))}>
+            <div class={classes!("static", dark_mode_val.then_some("dark"))}>
                 <div class={classes!["h-screen", "grid", "grid-rows-12", "auto-rows-fr"]}>
                     <div class="row-span-1 bg-gradient-to-r from-black via-red-700 to-yellow-500">
                             <Header/>
@@ -60,6 +62,7 @@ pub fn app() -> Html {
                             <Footer/>
                         </div>
                 </div>
+                <Modal />
             </div>
         </ContextProvider<Rc<Context>>>
     }

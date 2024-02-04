@@ -60,6 +60,7 @@ pub mod header {
         let context = use_context::<Rc<Context>>().unwrap();
 
         let user_locale = &context.locale;
+        let is_modal_open = &context.is_modal_open;
         let select_ref = NodeRef::default();
         let is_selected = |locale: &Locale| {
             if let Some(user_locale) = user_locale.as_ref() {
@@ -88,10 +89,21 @@ pub mod header {
             })
         };
 
+        let oninfoclick = {
+            let is_modal_open = is_modal_open.clone();
+            Callback::from(move |_e: MouseEvent| {
+                is_modal_open.set(!(*is_modal_open));
+            })
+        };
+
         html! {
             <nav class="flex items-center justify-between px-2 sm:px-4 md:px-6 h-py-1 sm:py-2 md:py-4 h-full">
             <div class="text-white font-bold text-xl">{"Verbihr"}</div>
             <div class="flex space-x-4">
+            <svg onclick={oninfoclick} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14v-4M12 6h.01"></path>
+            </svg>
+
             <div {onclick} class="w-6 h-6 text-black transform transition-transform duration-300 hover:rotate-180">
                 if *context.dark_mode {
                     {dark_mode_icon}
@@ -106,6 +118,111 @@ pub mod header {
                 </select>
             </div>
           </nav>
+        }
+    }
+}
+
+pub mod modal {
+
+    use std::rc::Rc;
+
+    use wasm_bindgen::{closure::Closure, JsCast};
+    use web_sys::{js_sys::Function, window, KeyboardEvent};
+    use yew::{function_component, html, use_context, use_effect_with, Html};
+
+    use crate::{context::Context, i18n::I18N};
+
+    const ONKEYDOWN_EVENT_NAME: &str = "keydown";
+
+    #[function_component(Modal)]
+    pub fn modal() -> Html {
+        let context = use_context::<Rc<Context>>().unwrap();
+
+        let translations = &context.translations;
+
+        let is_modal_open = context.is_modal_open.clone();
+        let is_modal_open_val = *context.is_modal_open.clone();
+
+        let onkeydown: Function = {
+            let is_modal_open = is_modal_open.clone();
+            let event = Box::new(move |keydown: KeyboardEvent| {
+                if keydown.key_code() == 27 {
+                    keydown.prevent_default();
+                    is_modal_open.set(false);
+                }
+            }) as Box<dyn FnMut(_)>;
+            let closure = Closure::wrap(event);
+            closure.into_js_value().unchecked_into()
+        };
+
+        use_effect_with(onkeydown, move |onkeydown| {
+            let window = window().unwrap();
+            window
+                .add_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, onkeydown)
+                .unwrap();
+            {
+                let onkeydown = onkeydown.clone();
+                move || {
+                    window
+                        .remove_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, &onkeydown)
+                        .unwrap();
+                }
+            }
+        });
+
+        html! {
+            <>
+            if is_modal_open_val {
+                <div class="absolute left-0 top-0 bg-black bg-opacity-60 h-full w-full z-100">
+                    <div class="grid grid-cols-9 items-center justify-center text-black dark:text-white p-6 md:p-12 h-full">
+                        <div class="col-span-1 sm:col-span-2 lg:col-span-3"></div>
+                        <div class="col-span-7 sm:col-span-5 lg:col-span-3 bg-slate-300 dark:bg-gray-800 border-2 rounded-lg border-slate-400 dark:border-gray-700">
+                            <div name="modal-content flex flex-col space-y-4 px-2" >
+                                <div class="flex justify-between border-b border-slate-400 dark:border-gray-700">
+                                    <h1 class="pl-2">
+                                    <I18N label="help_modal_title" {translations} />
+                                    </h1>
+                                    <svg onclick={move |_| is_modal_open.set(false)}xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex flex-col space-y-2 mb-2">
+                                    <h2 class="p-2"><I18N label="keybindings" {translations} /></h2>
+                                    <div class="grid grid-cols-4 items-center justify-center text-center gap-4 w-full">
+                                        <div class="flex space-x-0.5 items-center justify-center ">
+                                            <kbd class="common-kbd">{"ALT"}</kbd><p>{"+"}</p><kbd class="common-kbd">{"a"}</kbd>
+                                        </div>
+                                        <div>
+                                            {"ä"}
+                                        </div>
+                                        <div class="flex space-x-0.5 items-center justify-center ">
+                                            <kbd class="common-kbd">{"ALT"}</kbd><p>{"+"}</p><kbd class="common-kbd">{"i"}</kbd>
+                                        </div>
+                                        <div>
+                                            {"ï"}
+                                        </div>
+                                        <div class="flex space-x-0.5 items-center justify-center ">
+                                            <kbd class="common-kbd">{"ALT"}</kbd><p>{"+"}</p><kbd class="common-kbd">{"u"}</kbd>
+                                        </div>
+                                        <div>
+                                            {"ü"}
+                                        </div>
+                                        <div class="flex space-x-0.5 items-center justify-center ">
+                                            <kbd class="common-kbd">{"ALT"}</kbd><p>{"+"}</p><kbd class="common-kbd">{"s"}</kbd>
+                                        </div>
+                                        <div>
+                                            {"ß"}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-span-1 sm:col-span-2 lg:col-span-3"></div>
+                    </div>
+                </div>
+            }
+            </>
         }
     }
 }

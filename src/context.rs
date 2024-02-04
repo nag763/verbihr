@@ -21,4 +21,5 @@ pub struct Context {
     pub dark_mode: UseStateHandle<bool>,
     pub translations: Rc<Option<TranslationMap>>,
     pub errors: UseStateHandle<Vec<GermanVerb>>,
+    pub is_modal_open: UseStateHandle<bool>,
 }
