@@ -44,7 +44,7 @@ pub fn app() -> Html {
         dark_mode,
         translations,
         errors: use_state(Vec::new),
-        is_modal_open: use_state(|| true),
+        is_modal_open: use_state(|| false),
     });
 
     html! {

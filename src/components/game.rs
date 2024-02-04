@@ -409,13 +409,13 @@ pub fn game(props: &GameProperties) -> Html {
                 }
             </div>
             <form>
-            <div class="flex flex-row md:flex-col border-separate md:space-x-2 dark:text-white w-full h-full">
+            <div class="flex flex-row md:flex-col border-separate space-y-2 md:space-x-2 md:space-y-4 dark:text-white w-full h-full">
                 <div class="flex flex-col md:flex-row justify-evenly w-full text-center">
-                    <p>{"Infinitiv    "}</p>
-                    <p>{"Präsens (ich)"}</p>
-                    <p>{"Präsens (er) "}</p>
-                    <p>{"Preterit     "}</p>
-                    <p>{"Partizip II  "}</p>
+                    <p class="basis-1/5">{"Infinitiv    "}</p>
+                    <p class="basis-1/5">{"Präsens (ich)"}</p>
+                    <p class="basis-1/5">{"Präsens (er) "}</p>
+                    <p class="basis-1/5">{"Preterit     "}</p>
+                    <p class="basis-1/5">{"Partizip II  "}</p>
                 </div>
                 <form class="flex flex-col md:flex-row md:space-x-2 justify-evenly w-full" method="POST" action="javascript:void(0);" {onsubmit}>
                     <input autocomplete="off" ref={infinitiv_ref} required=true disabled={displayed_field == 0} type="text" name="infinitiv" placeholder=" " value={(displayed_field == 0).then(|| verb.infinitiv.clone())} class="table-input"/>
