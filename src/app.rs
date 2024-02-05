@@ -49,8 +49,8 @@ pub fn app() -> Html {
 
     html! {
         <ContextProvider <Rc<Context>> {context}>
-            <div class={classes!("static", dark_mode_val.then_some("dark"))}>
-                <div class={classes!["h-screen", "grid", "grid-rows-12", "auto-rows-fr"]}>
+            <div class={classes!("static", "w-full", dark_mode_val.then_some("dark"))}>
+                <div class={classes!["h-screen", "grid", "grid-rows-12", "auto-rows-fr", "w-full"]}>
                     <div class="row-span-1 bg-gradient-to-r from-black via-red-700 to-yellow-500">
                             <Header/>
                         </div>
