@@ -97,9 +97,7 @@ pub fn game(props: &GameProperties) -> Html {
     let index_val = *index;
     let errors_val = errors.to_vec();
 
-    let given_value = use_state(|| rand::thread_rng().gen_range(0u8..5u8));
-
-    let displayed_field = *given_value;
+    let given_value = use_memo(index_val, |_| rand::thread_rng().gen_range(0u8..5u8));
 
     let focus_input = {
         let (infinitiv_ref, prasens_ich_ref) = (infinitiv_ref.clone(), prasens_ich_ref.clone());
@@ -134,10 +132,11 @@ pub fn game(props: &GameProperties) -> Html {
         None
     };
 
-    use_effect_with(displayed_field, {
+    use_effect_with((), {
         let focus_input = focus_input.clone();
+        let given_value = *given_value.clone();
         move |_| {
-            focus_input(displayed_field);
+            focus_input(given_value);
         }
     });
 
@@ -264,7 +263,6 @@ pub fn game(props: &GameProperties) -> Html {
                     let next_index = *index + 1;
                     if next_index < number_of_verbs {
                         index.set(*index + 1);
-                        given_value.set(rand::thread_rng().gen_range(0u8..5u8));
                         focus_input(*given_value);
                     } else {
                         state_setter.set(State::End);
@@ -390,7 +388,6 @@ pub fn game(props: &GameProperties) -> Html {
                 }
                 if next_index < number_of_verbs {
                     index.set(*index + 1);
-                    given_value.set(rand::thread_rng().gen_range(0u8..5u8));
                     focus_input(*given_value);
                 } else {
                     state_setter.set(State::End);
@@ -418,11 +415,11 @@ pub fn game(props: &GameProperties) -> Html {
                     <p class="basis-1/5">{"Partizip II  "}</p>
                 </div>
                 <form class="flex flex-col md:flex-row md:space-x-2 justify-evenly w-full" method="POST" action="javascript:void(0);" {onsubmit}>
-                    <input autocomplete="off" ref={infinitiv_ref} required=true disabled={displayed_field == 0} type="text" name="infinitiv" placeholder=" " value={(displayed_field == 0).then(|| verb.infinitiv.clone())} class="table-input"/>
-                    <input autocomplete="off" ref={prasens_ich_ref} required=true disabled={displayed_field == 1} type="text" name="prasens_ich" placeholder=" " value={(displayed_field == 1).then(|| verb.prasens_ich.clone())} autofocus={displayed_field != 0} class="table-input"/>
-                    <input autocomplete="off" ref={prasens_er_ref} required=true disabled={displayed_field == 2} type="text" name="prasens_er" placeholder=" " value={(displayed_field == 2).then(|| verb.prasens_er.clone())} class="table-input"/>
-                    <input autocomplete="off" ref={preterit_ref} required=true disabled={displayed_field == 3} type="text" name="preterit" placeholder=" " value={(displayed_field == 3).then(|| verb.preterit.clone())} class="table-input"/>
-                    <input autocomplete="off" ref={partizip_ii_ref} required=true disabled={displayed_field == 4}  type="text" name="partizip_ii" placeholder=" " value={(displayed_field == 4).then(|| verb.partizip_ii.clone())} class="table-input"/>
+                    <input autocomplete="off" ref={infinitiv_ref} required=true disabled={*given_value == 0} type="text" name="infinitiv" placeholder=" " value={(*given_value == 0).then(|| verb.infinitiv.clone())} class="table-input"/>
+                    <input autocomplete="off" ref={prasens_ich_ref} required=true disabled={*given_value == 1} type="text" name="prasens_ich" placeholder=" " value={(*given_value == 1).then(|| verb.prasens_ich.clone())} autofocus={*given_value != 0} class="table-input"/>
+                    <input autocomplete="off" ref={prasens_er_ref} required=true disabled={*given_value == 2} type="text" name="prasens_er" placeholder=" " value={(*given_value == 2).then(|| verb.prasens_er.clone())} class="table-input"/>
+                    <input autocomplete="off" ref={preterit_ref} required=true disabled={*given_value == 3} type="text" name="preterit" placeholder=" " value={(*given_value == 3).then(|| verb.preterit.clone())} class="table-input"/>
+                    <input autocomplete="off" ref={partizip_ii_ref} required=true disabled={*given_value == 4}  type="text" name="partizip_ii" placeholder=" " value={(*given_value == 4).then(|| verb.partizip_ii.clone())} class="table-input"/>
                     <input type="submit" hidden=true />
                 </form>
             </div>
