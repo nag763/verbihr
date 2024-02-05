@@ -86,7 +86,7 @@ pub fn body() -> Html {
     let state = use_state(State::default);
     let state_setter = state.setter();
     let errors = context.errors.clone();
-    let verbs = use_memo((), |_| {
+    let verbs = use_memo(*state == State::End , |_| {
         let mut verbs = GermanVerb::get_verbs();
         verbs.shuffle(&mut rand::thread_rng());
         verbs
