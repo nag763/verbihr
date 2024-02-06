@@ -1,3 +1,4 @@
+use wasm_bindgen::convert::FromWasmAbi;
 use yew::hook;
 
 macro_rules! generate_by_cloning {
@@ -10,9 +11,10 @@ macro_rules! generate_by_cloning {
 }
 
 #[hook]
-pub fn use_keyboard_event_on_context<F>(callback: F, trigger: &str)
+pub fn use_event_on_context<F, T>(callback: F, trigger: &str)
 where
-    F: Fn(web_sys::KeyboardEvent) + 'static,
+    F: FnMut(T) + 'static,
+    T: FromWasmAbi + 'static,
 {
     use wasm_bindgen::JsCast;
     let trigger = trigger.to_string();
@@ -168,7 +170,7 @@ pub mod modal {
     use yew::{function_component, html, use_context, Html};
 
     use crate::{
-        components::{use_keyboard_event_on_context, ONKEYDOWN_EVENT_NAME},
+        components::{use_event_on_context, ONKEYDOWN_EVENT_NAME},
         context::Context,
         i18n::I18N,
     };
@@ -182,7 +184,7 @@ pub mod modal {
         let is_modal_open = context.is_modal_open.clone();
         let is_modal_open_val = *context.is_modal_open.clone();
 
-        use_keyboard_event_on_context(
+        use_event_on_context(
             {
                 let is_modal_open = is_modal_open.clone();
                 move |keydown: KeyboardEvent| {

@@ -9,7 +9,7 @@ use yew::{
 };
 
 use crate::{
-    components::{use_keyboard_event_on_context, ONKEYDOWN_EVENT_NAME},
+    components::{use_event_on_context, ONKEYDOWN_EVENT_NAME},
     context::State,
     i18n::{Locale, TranslationMap, I18N},
     irregular_verb::GermanVerb,
@@ -213,7 +213,7 @@ pub fn game(props: &GameProperties) -> Html {
         }}
     , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref, verb, state_setter, translations, given_value, focus_input, errors, index};
 
-    use_keyboard_event_on_context(
+    use_event_on_context(
         {
             move |keydown: KeyboardEvent| {
                 let insertable = if keydown.alt_key() {

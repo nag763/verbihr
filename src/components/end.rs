@@ -6,7 +6,7 @@ use yew::{
 };
 
 use crate::{
-    components::{use_keyboard_event_on_context, ONKEYDOWN_EVENT_NAME},
+    components::{use_event_on_context, ONKEYDOWN_EVENT_NAME},
     context::State,
     i18n::{Locale, TranslationMap, I18N},
     irregular_verb::GermanVerb,
@@ -41,7 +41,7 @@ pub fn end(props: &EndProperties) -> Html {
         })
     };
 
-    use_keyboard_event_on_context(
+    use_event_on_context(
         {
             let onkeydown = leaveevent.clone();
             move |keydown: KeyboardEvent| {

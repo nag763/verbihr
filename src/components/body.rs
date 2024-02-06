@@ -8,7 +8,7 @@ use yew::{
 };
 
 use crate::{
-    components::{end::End, game::Game, use_keyboard_event_on_context, ONKEYDOWN_EVENT_NAME},
+    components::{end::End, game::Game, use_event_on_context, ONKEYDOWN_EVENT_NAME},
     context::{Context, State},
     i18n::{TranslationMap, I18N},
     irregular_verb::GermanVerb,
@@ -31,7 +31,7 @@ pub fn welcome_body(props: &WelcomeBodyProps) -> Html {
         })
     };
 
-    use_keyboard_event_on_context(
+    use_event_on_context(
         {
             let onclick = props.onclick.clone();
             move |keydown: KeyboardEvent| {
