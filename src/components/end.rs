@@ -1,13 +1,12 @@
 use std::rc::Rc;
 
-use wasm_bindgen::{prelude::Closure, JsCast};
-use web_sys::{js_sys::Function, window, KeyboardEvent, MouseEvent};
+use web_sys::{KeyboardEvent, MouseEvent};
 use yew::{
-    function_component, html, use_effect_with, Callback, Event, Html, Properties, UseStateHandle,
-    UseStateSetter,
+    function_component, html, Callback, Event, Html, Properties, UseStateHandle, UseStateSetter,
 };
 
 use crate::{
+    components::{use_keyboard_event_on_context, ONKEYDOWN_EVENT_NAME},
     context::State,
     i18n::{Locale, TranslationMap, I18N},
     irregular_verb::GermanVerb,
@@ -24,8 +23,6 @@ pub struct EndProperties {
     pub errors: UseStateHandle<Vec<GermanVerb>>,
     pub state_setter: UseStateSetter<State>,
 }
-
-const ONKEYDOWN_EVENT_NAME: &str = "keydown";
 
 #[function_component(End)]
 pub fn end(props: &EndProperties) -> Html {
@@ -44,32 +41,18 @@ pub fn end(props: &EndProperties) -> Html {
         })
     };
 
-    let onkeydown: Function = {
-        let onkeydown = leaveevent.clone();
-        let event = Box::new(move |keydown: KeyboardEvent| {
-            if keydown.key_code() == 13 {
-                keydown.prevent_default();
-                onkeydown.emit(keydown.into());
-            }
-        }) as Box<dyn FnMut(_)>;
-        let closure = Closure::wrap(event);
-        closure.into_js_value().unchecked_into()
-    };
-
-    use_effect_with(onkeydown, move |onkeydown| {
-        let window = window().unwrap();
-        window
-            .add_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, onkeydown)
-            .unwrap();
+    use_keyboard_event_on_context(
         {
-            let onkeydown = onkeydown.clone();
-            move || {
-                window
-                    .remove_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, &onkeydown)
-                    .unwrap();
+            let onkeydown = leaveevent.clone();
+            move |keydown: KeyboardEvent| {
+                if keydown.key_code() == 13 {
+                    keydown.prevent_default();
+                    onkeydown.emit(keydown.into());
+                }
             }
-        }
-    });
+        },
+        ONKEYDOWN_EVENT_NAME,
+    );
 
     html! {
         <>

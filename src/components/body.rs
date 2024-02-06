@@ -1,21 +1,18 @@
 use std::rc::Rc;
 
 use rand::seq::SliceRandom;
-use wasm_bindgen::{closure::Closure, JsCast};
-use web_sys::{js_sys::Function, window, Event, KeyboardEvent, MouseEvent};
+use web_sys::{Event, KeyboardEvent, MouseEvent};
 use yew::{
-    function_component, html, use_context, use_effect_with, use_memo, use_state,
-    virtual_dom::VNode, Callback, Html, Properties,
+    function_component, html, use_context, use_memo, use_state, virtual_dom::VNode, Callback, Html,
+    Properties,
 };
 
 use crate::{
-    components::{end::End, game::Game},
+    components::{end::End, game::Game, use_keyboard_event_on_context, ONKEYDOWN_EVENT_NAME},
     context::{Context, State},
     i18n::{TranslationMap, I18N},
     irregular_verb::GermanVerb,
 };
-
-const ONKEYDOWN_EVENT_NAME: &str = "keydown";
 
 #[derive(Properties, PartialEq)]
 pub struct WelcomeBodyProps {
@@ -34,32 +31,18 @@ pub fn welcome_body(props: &WelcomeBodyProps) -> Html {
         })
     };
 
-    let onkeydown: Function = {
-        let onclick = props.onclick.clone();
-        let event = Box::new(move |keydown: KeyboardEvent| {
-            if keydown.key_code() == 13 {
-                keydown.prevent_default();
-                onclick.emit(keydown.into());
-            }
-        }) as Box<dyn FnMut(_)>;
-        let closure = Closure::wrap(event);
-        closure.into_js_value().unchecked_into()
-    };
-
-    use_effect_with(onkeydown, move |onkeydown| {
-        let window = window().unwrap();
-        window
-            .add_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, onkeydown)
-            .unwrap();
+    use_keyboard_event_on_context(
         {
-            let onkeydown = onkeydown.clone();
-            move || {
-                window
-                    .remove_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, &onkeydown)
-                    .unwrap();
+            let onclick = props.onclick.clone();
+            move |keydown: KeyboardEvent| {
+                if keydown.key_code() == 13 {
+                    keydown.prevent_default();
+                    onclick.emit(keydown.into());
+                }
             }
-        }
-    });
+        },
+        ONKEYDOWN_EVENT_NAME,
+    );
 
     html! {
       <>
@@ -86,7 +69,7 @@ pub fn body() -> Html {
     let state = use_state(State::default);
     let state_setter = state.setter();
     let errors = context.errors.clone();
-    let verbs = use_memo(*state == State::End , |_| {
+    let verbs = use_memo(*state == State::End, |_| {
         let mut verbs = GermanVerb::get_verbs();
         verbs.shuffle(&mut rand::thread_rng());
         verbs

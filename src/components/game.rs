@@ -2,17 +2,14 @@ use std::rc::Rc;
 
 use rand::Rng;
 use wasm_bindgen::{closure::Closure, JsCast};
-use web_sys::{
-    js_sys::Function, window, Event, HtmlInputElement, KeyboardEvent, MouseEvent, SubmitEvent,
-};
+use web_sys::{js_sys::Function, Event, HtmlInputElement, KeyboardEvent, MouseEvent, SubmitEvent};
 use yew::{
     function_component, html, use_effect_with, use_memo, use_state, Html, NodeRef, Properties,
     UseStateHandle, UseStateSetter,
 };
 
-const ONKEYDOWN_EVENT_NAME: &str = "keydown";
-
 use crate::{
+    components::{use_keyboard_event_on_context, ONKEYDOWN_EVENT_NAME},
     context::State,
     i18n::{Locale, TranslationMap, I18N},
     irregular_verb::GermanVerb,
@@ -99,8 +96,7 @@ pub fn game(props: &GameProperties) -> Html {
 
     let given_value = use_memo(index_val, |_| rand::thread_rng().gen_range(0u8..5u8));
 
-    let focus_input = {
-        let (infinitiv_ref, prasens_ich_ref) = (infinitiv_ref.clone(), prasens_ich_ref.clone());
+    let focus_input = generate_by_cloning! {
         move |index: u8| {
             if let (Some(infinitiv_ref), Some(prasens_ich_ref)) = (
                 infinitiv_ref.cast::<HtmlInputElement>(),
@@ -112,7 +108,9 @@ pub fn game(props: &GameProperties) -> Html {
                     let _ = prasens_ich_ref.focus();
                 }
             }
-        }
+        },
+        infinitiv_ref,
+        prasens_ich_ref
     };
 
     let number_of_verbs = verbs.len();
@@ -140,65 +138,8 @@ pub fn game(props: &GameProperties) -> Html {
         }
     });
 
-    let submit_event = {
-        let (infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref) = (
-            infinitiv_ref.clone(),
-            prasens_ich_ref.clone(),
-            prasens_er_ref.clone(),
-            preterit_ref.clone(),
-            partizip_ii_ref.clone(),
-        );
-        let verb = verb.clone();
-        let state_setter = state_setter.clone();
-        let translations = translations.clone();
-        let given_value = given_value.clone();
-
-        let focus_input = focus_input.clone();
-        let errors = errors.clone();
-        let verb = verb.clone();
-        let index = index.clone();
-
-        let onkeydown: Function = {
-            let event = Box::new(move |keydown: KeyboardEvent| {
-                let insertable = if keydown.alt_key() {
-                    match keydown.key_code() {
-                        85 => Some('ü'),
-                        83 => Some('ß'),
-                        73 => Some('ï'),
-                        65 => Some('ä'),
-                        _ => None,
-                    }
-                } else {
-                    None
-                };
-                if let Some(insertable) = insertable {
-                    keydown.prevent_default();
-                    if let Some(target) = keydown.target() {
-                        if let Some(input) = target.dyn_ref::<HtmlInputElement>() {
-                            let input_val = input.value();
-                            input.set_value(&format!("{input_val}{insertable}"));
-                        }
-                    }
-                };
-            }) as Box<dyn FnMut(_)>;
-            let closure = Closure::wrap(event);
-            closure.into_js_value().unchecked_into()
-        };
-
-        use_effect_with(onkeydown, move |onkeydown| {
-            let window = window().unwrap();
-            window
-                .add_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, onkeydown)
-                .unwrap();
-            {
-                let onkeydown = onkeydown.clone();
-                move || {
-                    window
-                        .remove_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, &onkeydown)
-                        .unwrap();
-                }
-            }
-        });
+    let submit_event = generate_by_cloning! {
+        {
 
         move |_: Event| {
             if let (
@@ -269,18 +210,38 @@ pub fn game(props: &GameProperties) -> Html {
                     }
                 }
             }
-        }
-    };
+        }}
+    , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref, verb, state_setter, translations, given_value, focus_input, errors, index};
 
-    let clear_inputs = {
-        let (infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref) = (
-            infinitiv_ref.clone(),
-            prasens_ich_ref.clone(),
-            prasens_er_ref.clone(),
-            preterit_ref.clone(),
-            partizip_ii_ref.clone(),
-        );
+    use_keyboard_event_on_context(
+        {
+            move |keydown: KeyboardEvent| {
+                let insertable = if keydown.alt_key() {
+                    match keydown.key_code() {
+                        85 => Some('ü'),
+                        83 => Some('ß'),
+                        73 => Some('ï'),
+                        65 => Some('ä'),
+                        _ => None,
+                    }
+                } else {
+                    None
+                };
+                if let Some(insertable) = insertable {
+                    keydown.prevent_default();
+                    if let Some(target) = keydown.target() {
+                        if let Some(input) = target.dyn_ref::<HtmlInputElement>() {
+                            let input_val = input.value();
+                            input.set_value(&format!("{input_val}{insertable}"));
+                        }
+                    }
+                };
+            }
+        },
+        ONKEYDOWN_EVENT_NAME,
+    );
 
+    let clear_inputs = generate_by_cloning! {
         move |_| {
             if let (
                 Some(infinitiv_ref),
@@ -310,43 +271,27 @@ pub fn game(props: &GameProperties) -> Html {
                 }
             }
         }
-    };
+    , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref};
 
-    let stop_here = {
-        let state_setter = state_setter.clone();
+    let stop_here = generate_by_cloning! {
         move |_| {
             state_setter.set(State::End);
         }
-    };
+    , state_setter};
 
-    let onsubmit = {
-        let onsubmit = submit_event.clone();
+    let onsubmit = generate_by_cloning! {
         move |e: SubmitEvent| {
-            onsubmit(e.into());
+            submit_event(e.into());
         }
-    };
+    , submit_event};
 
-    let onvalidate = {
-        let onsubmit = submit_event.clone();
+    let onvalidate = generate_by_cloning! {
         move |e: MouseEvent| {
-            onsubmit(e.into());
+            submit_event(e.into());
         }
-    };
+    , submit_event};
 
-    let giveup = {
-        let (infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref) = (
-            infinitiv_ref.clone(),
-            prasens_ich_ref.clone(),
-            prasens_er_ref.clone(),
-            preterit_ref.clone(),
-            partizip_ii_ref.clone(),
-        );
-        let state_setter = state_setter.clone();
-        let errors = errors.clone();
-        let given_value = given_value.clone();
-        let index = index.clone();
-        let focus_input = focus_input.clone();
-        let verb = verb.clone();
+    let giveup = generate_by_cloning! {
         move |_e: MouseEvent| {
             if let (
                 Some(infinitiv_ref),
@@ -394,7 +339,7 @@ pub fn game(props: &GameProperties) -> Html {
                 }
             }
         }
-    };
+    , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref, state_setter, errors, given_value, index, focus_input, verb};
 
     html! {
     <>

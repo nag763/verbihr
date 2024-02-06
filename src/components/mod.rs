@@ -1,3 +1,41 @@
+use yew::hook;
+
+macro_rules! generate_by_cloning {
+    ($b:stmt,  $( $x:ident ),* ) => {
+        {
+            let ($($x ,)*) = ($($x.clone(),)*);
+            $b
+        }
+    };
+}
+
+#[hook]
+pub fn use_keyboard_event_on_context<F>(callback: F, trigger: &str)
+where
+    F: Fn(web_sys::KeyboardEvent) + 'static,
+{
+    use wasm_bindgen::JsCast;
+    let trigger = trigger.to_string();
+    let event: web_sys::js_sys::Function = {
+        let event = Box::new(callback) as Box<dyn FnMut(_)>;
+        let closure = wasm_bindgen::closure::Closure::wrap(event);
+        closure.into_js_value().unchecked_into()
+    };
+    yew::use_effect_with((), move |_| {
+        let window = web_sys::window().unwrap();
+        window
+            .add_event_listener_with_callback(&trigger, &event)
+            .unwrap();
+        move || {
+            window
+                .remove_event_listener_with_callback(&trigger, &event)
+                .unwrap();
+        }
+    });
+}
+
+pub const ONKEYDOWN_EVENT_NAME: &str = "keydown";
+
 pub mod footer {
     use std::rc::Rc;
 
@@ -126,13 +164,14 @@ pub mod modal {
 
     use std::rc::Rc;
 
-    use wasm_bindgen::{closure::Closure, JsCast};
-    use web_sys::{js_sys::Function, window, KeyboardEvent};
-    use yew::{function_component, html, use_context, use_effect_with, Html};
+    use web_sys::KeyboardEvent;
+    use yew::{function_component, html, use_context, Html};
 
-    use crate::{context::Context, i18n::I18N};
-
-    const ONKEYDOWN_EVENT_NAME: &str = "keydown";
+    use crate::{
+        components::{use_keyboard_event_on_context, ONKEYDOWN_EVENT_NAME},
+        context::Context,
+        i18n::I18N,
+    };
 
     #[function_component(Modal)]
     pub fn modal() -> Html {
@@ -143,32 +182,18 @@ pub mod modal {
         let is_modal_open = context.is_modal_open.clone();
         let is_modal_open_val = *context.is_modal_open.clone();
 
-        let onkeydown: Function = {
-            let is_modal_open = is_modal_open.clone();
-            let event = Box::new(move |keydown: KeyboardEvent| {
-                if keydown.key_code() == 27 {
-                    keydown.prevent_default();
-                    is_modal_open.set(false);
-                }
-            }) as Box<dyn FnMut(_)>;
-            let closure = Closure::wrap(event);
-            closure.into_js_value().unchecked_into()
-        };
-
-        use_effect_with(onkeydown, move |onkeydown| {
-            let window = window().unwrap();
-            window
-                .add_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, onkeydown)
-                .unwrap();
+        use_keyboard_event_on_context(
             {
-                let onkeydown = onkeydown.clone();
-                move || {
-                    window
-                        .remove_event_listener_with_callback(ONKEYDOWN_EVENT_NAME, &onkeydown)
-                        .unwrap();
+                let is_modal_open = is_modal_open.clone();
+                move |keydown: KeyboardEvent| {
+                    if keydown.key_code() == 27 {
+                        keydown.prevent_default();
+                        is_modal_open.set(false);
+                    }
                 }
-            }
-        });
+            },
+            ONKEYDOWN_EVENT_NAME,
+        );
 
         html! {
             <>
