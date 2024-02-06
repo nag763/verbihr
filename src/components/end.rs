@@ -32,14 +32,12 @@ pub fn end(props: &EndProperties) -> Html {
     let translations = &props.translations;
     let state_setter = props.state_setter.clone();
 
-    let leaveevent = {
-        let state_setter = state_setter.clone();
-        let errors_setter = errors_setter.clone();
+    let leaveevent = generate_by_cloning! {
         Callback::from(move |_event: Event| {
             state_setter.set(State::Welcome);
             errors_setter.set(vec![]);
         })
-    };
+    , state_setter, errors_setter};
 
     use_event_on_context(
         {

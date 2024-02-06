@@ -241,8 +241,8 @@ pub fn game(props: &GameProperties) -> Html {
         ONKEYDOWN_EVENT_NAME,
     );
 
-    let clear_inputs = generate_by_cloning! {
-        move |_| {
+    let clear_inputs = create_callback_with_local_clone! {
+
             if let (
                 Some(infinitiv_ref),
                 Some(prasens_ich_ref),
@@ -270,13 +270,11 @@ pub fn game(props: &GameProperties) -> Html {
                     }
                 }
             }
-        }
+
     , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref};
 
-    let stop_here = generate_by_cloning! {
-        move |_| {
-            state_setter.set(State::End);
-        }
+    let stop_here = create_callback_with_local_clone! {
+            state_setter.set(State::End)
     , state_setter};
 
     let onsubmit = generate_by_cloning! {
@@ -291,8 +289,7 @@ pub fn game(props: &GameProperties) -> Html {
         }
     , submit_event};
 
-    let giveup = generate_by_cloning! {
-        move |_e: MouseEvent| {
+    let giveup = create_callback_with_local_clone! {
             if let (
                 Some(infinitiv_ref),
                 Some(prasens_ich_ref),
@@ -338,7 +335,6 @@ pub fn game(props: &GameProperties) -> Html {
                     state_setter.set(State::End);
                 }
             }
-        }
     , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref, state_setter, errors, given_value, index, focus_input, verb};
 
     html! {

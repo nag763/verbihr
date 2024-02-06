@@ -10,6 +10,18 @@ macro_rules! generate_by_cloning {
     };
 }
 
+macro_rules! create_callback {
+    ($b:expr ) => {
+        yew::Callback::from(move |_e| $b)
+    };
+}
+
+macro_rules! create_callback_with_local_clone {
+    ($b:expr, $( $x:ident ),*  ) => {
+        generate_by_cloning!(create_callback!($b), $($x ),*)
+    };
+}
+
 #[hook]
 pub fn use_event_on_context<F, T>(callback: F, trigger: &str)
 where
@@ -69,8 +81,8 @@ pub mod header {
 
     use std::rc::Rc;
 
-    use web_sys::{Event, HtmlSelectElement, MouseEvent};
-    use yew::{function_component, html, use_context, Callback, Html, NodeRef};
+    use web_sys::HtmlSelectElement;
+    use yew::{function_component, html, use_context, Html, NodeRef};
 
     use crate::{context::Context, i18n::Locale};
 
@@ -102,6 +114,7 @@ pub mod header {
         let user_locale = &context.locale;
         let is_modal_open = &context.is_modal_open;
         let select_ref = NodeRef::default();
+        let dark_mode = context.dark_mode.clone();
         let is_selected = |locale: &Locale| {
             if let Some(user_locale) = user_locale.as_ref() {
                 user_locale.short_name == locale.short_name
@@ -109,32 +122,20 @@ pub mod header {
                 false
             }
         };
-        let onchange = {
-            let select_ref = select_ref.clone();
-            let user_locale = user_locale.clone();
-            Callback::from(move |_e: Event| {
-                if let Some(select) = select_ref.cast::<HtmlSelectElement>() {
-                    if let Some(locale) = Locale::get_by_short_name(&select.value()) {
-                        user_locale.set(Some(locale));
-                    }
+        let onchange = create_callback_with_local_clone!(
+            if let Some(select) = select_ref.cast::<HtmlSelectElement>() {
+                if let Some(locale) = Locale::get_by_short_name(&select.value()) {
+                    user_locale.set(Some(locale));
                 }
-            })
-        };
+            },
+            select_ref,
+            user_locale
+        );
 
-        let onclick = {
-            let dark_mode_enabled = context.dark_mode.clone();
-            let dark_mode_val = *context.dark_mode;
-            Callback::from(move |_e: MouseEvent| {
-                dark_mode_enabled.set(!dark_mode_val);
-            })
-        };
+        let onclick = create_callback_with_local_clone!(dark_mode.set(!(*dark_mode)), dark_mode);
 
-        let oninfoclick = {
-            let is_modal_open = is_modal_open.clone();
-            Callback::from(move |_e: MouseEvent| {
-                is_modal_open.set(!(*is_modal_open));
-            })
-        };
+        let oninfoclick =
+            create_callback_with_local_clone!(is_modal_open.set(!(*is_modal_open)), is_modal_open);
 
         html! {
             <nav class="flex items-center justify-between px-2 sm:px-4 md:px-6 h-py-1 sm:py-2 md:py-4 h-full">
