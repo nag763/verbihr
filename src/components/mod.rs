@@ -141,22 +141,24 @@ pub mod header {
             <nav class="flex items-center justify-between px-2 sm:px-4 md:px-6 h-py-1 sm:py-2 md:py-4 h-full">
             <div class="text-white font-bold text-xl">{"Verbihr"}</div>
             <div class="flex space-x-4">
-            <svg onclick={oninfoclick} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 hover:scale-110 transition-transform duration-300 ease-in-out">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14v-4M12 6h.01"></path>
-            </svg>
+            <button onclick={oninfoclick}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 hover:scale-110 transition-transform duration-300 ease-in-out">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14v-4M12 6h.01"></path>
+                </svg>
+            </button>
 
-            <div {onclick} class="w-6 h-6 text-black transform transition-transform duration-300 hover:rotate-180">
+            <button {onclick} class="w-6 h-6 text-black transform transition-transform duration-300 hover:rotate-180">
                 if *context.dark_mode {
                     {dark_mode_icon}
                 } else {
                     {light_mode_icon}
                 }
-            </div>
-                <select {onchange} ref={select_ref} class="border-0 bg-transparent hover:text-blue-500 transition-colors duration-300">
-                    {Locale::get_locales().iter().map(|locale|
-                        html! { <option value={locale.short_name.to_string()} selected={is_selected(locale)}>{locale.short_name.to_string()}</option> }
-                    ).collect::<Html>()}
-                </select>
+            </button>
+            <select {onchange} ref={select_ref} class="border-0 bg-transparent hover:text-blue-500 transition-colors duration-300">
+                {Locale::get_locales().iter().map(|locale|
+                    html! { <option value={locale.short_name.to_string()} selected={is_selected(locale)}>{locale.short_name.to_string()}</option> }
+                ).collect::<Html>()}
+            </select>
             </div>
           </nav>
         }
