@@ -102,7 +102,7 @@ pub fn end(props: &EndProperties) -> Html {
                 }
 
                 <div class="flex items-center justify-center">
-                    <button onclick={move |e: MouseEvent| leaveevent.emit(e.into())} class="bg-blue-500 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-blue-400 transition duration-300 w-2/3 md:w-1/3 h-1/6" >
+                    <button onclick={move |e: MouseEvent| leaveevent.emit(e.into())} class="bg-blue-500 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-blue-400 transition duration-300 w-2/3 md:w-1/3 h-1/6 focus:outline-none focus-visible:scale-105" >
                         <span><I18N label={"restart"} {translations}/></span>
                     </button>
                 </div>

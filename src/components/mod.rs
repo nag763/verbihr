@@ -64,7 +64,7 @@ pub mod footer {
         html! {
             <footer class="text-center py-1 lg:py-2 bg-slate-200 dark:bg-gray-900 h-full text-black dark:text-white text-xs h-full ">
             <div class="flex lg:flex-col items-center justify-center space-x-2 mt-auto">
-                <a href="https://github.com/nag763/verbihr" class="transform transition-transform duration-300 hover:scale-110" target="_blank">
+                <a href="https://github.com/nag763/verbihr" class="transform transition-transform duration-300 hover:scale-110 focus:outline-none focus-visible:scale-125" target="_blank" >
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path d="M12 0C5.373 0 0 5.373 0 12c0 5.303 3.438 9.8 8.207 11.387.6.11.793-.258.793-.577 0-.285-.012-1.04-.018-2.04-3.22.702-3.89-1.54-3.89-1.54-.525-1.327-1.282-1.68-1.282-1.68-1.048-.715.08-.702.08-.702 1.16.082 1.773 1.2 1.773 1.2 1.033 1.77 2.713 1.258 3.37.96.105-.748.405-1.26.737-1.546-2.586-.294-5.297-1.293-5.297-5.74 0-1.27.45-2.312 1.2-3.126-.12-.296-.522-1.482.114-3.08 0 0 1.008-.312 3.3 1.2a11.115 11.115 0 012.947-.4c1.002.007 2.007.135 2.947.4 2.29-1.512 3.297-1.2 3.297-1.2.636 1.598.234 2.784.114 3.08.75.814 1.2 1.856 1.2 3.126 0 4.458-2.715 5.442-5.305 5.728.42.36.795 1.068.795 2.15 0 1.55-.015 2.8-.015 3.18 0 .318.21.694.8.576C20.568 21.797 24 16.3 24 12c0-6.627-5.373-12-12-12z"/>
                     </svg>
@@ -141,20 +141,20 @@ pub mod header {
             <nav class="flex items-center justify-between px-2 sm:px-4 md:px-6 h-py-1 sm:py-2 md:py-4 h-full">
             <div class="text-white font-bold text-xl">{"Verbihr"}</div>
             <div class="flex space-x-4">
-            <button onclick={oninfoclick}>
+            <button onclick={oninfoclick} class="focus:outline-none focus-visible:scale-125">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 hover:scale-110 transition-transform duration-300 ease-in-out">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14v-4M12 6h.01"></path>
                 </svg>
             </button>
 
-            <button {onclick} class="w-6 h-6 text-black transform transition-transform duration-300 hover:rotate-180">
+            <button {onclick} class="w-6 h-6 text-black transform transition-transform duration-300 hover:rotate-180 focus:outline-none focus-visible:scale-125">
                 if *context.dark_mode {
                     {dark_mode_icon}
                 } else {
                     {light_mode_icon}
                 }
             </button>
-            <select {onchange} ref={select_ref} class="border-0 bg-transparent hover:text-blue-500 transition-colors duration-300">
+            <select {onchange} ref={select_ref} class="border-0 bg-transparent hover:text-blue-500 transition-colors duration-300 focus:outline-none focus-visible:scale-125">
                 {Locale::get_locales().iter().map(|locale|
                     html! { <option value={locale.short_name.to_string()} selected={is_selected(locale)}>{locale.short_name.to_string()}</option> }
                 ).collect::<Html>()}

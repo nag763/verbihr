@@ -50,7 +50,7 @@ pub fn welcome_body(props: &WelcomeBodyProps) -> Html {
             <div class="flex-grow"></div>
             <p class="text-md md:text-lg"><I18N label={"intro"} {translations}/></p>
             <div class="flex-grow"></div>
-            <button {onclick}  class="bg-blue-700 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-blue-500 transition duration-300 w-2/3 md:w-1/3 h-1/6">
+            <button {onclick}  class="bg-blue-700 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-blue-500 transition duration-300 w-2/3 md:w-1/3 h-1/6 focus:outline-none focus-visible:scale-105">
               <span><I18N label={"start"} {translations}/></span>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
