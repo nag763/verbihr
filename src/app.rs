@@ -54,7 +54,7 @@ pub fn app() -> Html {
                     <div class="row-span-1 bg-gradient-to-r from-black via-red-700 to-yellow-500">
                             <Header/>
                         </div>
-                        <div class="row-span-10 bg-slate-200 dark:bg-gray-900">
+                        <div class="row-span-10 bg-opacity-25 bg-gradient-to-b from-slate-200 to-slate-100 dark:from-gray-900 dark:to-gray-800">
                             <Body />
 
                         </div>

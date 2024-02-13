@@ -96,28 +96,9 @@ pub fn game(props: &GameProperties) -> Html {
 
     let given_value = use_memo(index_val, |_| rand::thread_rng().gen_range(0u8..5u8));
 
-    let focus_input = generate_by_cloning! {
-        move |index: u8| {
-            if let (Some(infinitiv_ref), Some(prasens_ich_ref)) = (
-                infinitiv_ref.cast::<HtmlInputElement>(),
-                prasens_ich_ref.cast::<HtmlInputElement>(),
-            ) {
-                if index != 0 {
-                    let _ = infinitiv_ref.focus();
-                } else {
-                    let _ = prasens_ich_ref.focus();
-                }
-            }
-        },
-        infinitiv_ref,
-        prasens_ich_ref
-    };
-
     let number_of_verbs = verbs.len();
 
-    let verb = use_memo((verbs.clone(), *index), |(verbs, index)| {
-        verbs.get(*index).cloned()
-    });
+    let verb = use_memo(index_val, move |index| verbs.get(*index).cloned());
     let Some(verb) = verb.as_ref() else {
         state_setter.set(State::Welcome);
         return html! {<></>};
@@ -129,14 +110,6 @@ pub fn game(props: &GameProperties) -> Html {
     } else {
         None
     };
-
-    use_effect_with((), {
-        let focus_input = focus_input.clone();
-        let given_value = *given_value.clone();
-        move |_| {
-            focus_input(given_value);
-        }
-    });
 
     let submit_event = generate_by_cloning! {
         {
@@ -204,14 +177,13 @@ pub fn game(props: &GameProperties) -> Html {
                     let next_index = *index + 1;
                     if next_index < number_of_verbs {
                         index.set(*index + 1);
-                        focus_input(*given_value);
                     } else {
                         state_setter.set(State::End);
                     }
                 }
             }
         }}
-    , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref, verb, state_setter, translations, given_value, focus_input, errors, index};
+    , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref, verb, state_setter, translations, errors, index};
 
     use_event_on_context(
         {
@@ -330,12 +302,28 @@ pub fn game(props: &GameProperties) -> Html {
                 }
                 if next_index < number_of_verbs {
                     index.set(*index + 1);
-                    focus_input(*given_value);
                 } else {
                     state_setter.set(State::End);
                 }
             }
-    , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref, state_setter, errors, given_value, index, focus_input, verb};
+    , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref, state_setter, errors, index, verb};
+
+    {
+        let (infinitiv_ref, prasens_ich_ref) = (infinitiv_ref.clone(), prasens_ich_ref.clone());
+        use_effect_with(*given_value, move |given_value| {
+            gloo_console::log!("Given value", *given_value);
+            if let (Some(infinitiv_ref), Some(prasens_ich_ref)) = (
+                infinitiv_ref.cast::<HtmlInputElement>(),
+                prasens_ich_ref.cast::<HtmlInputElement>(),
+            ) {
+                if given_value != &0 {
+                    let _ = infinitiv_ref.focus();
+                } else {
+                    let _ = prasens_ich_ref.focus();
+                }
+            }
+        });
+    }
 
     html! {
     <>
@@ -343,7 +331,7 @@ pub fn game(props: &GameProperties) -> Html {
 
             <div>
                 if let Some(meaning) = meaning {
-                    <h1 class="text-2xl md:text-4xl font-bold mb-4">{format!("{meaning} ({}/{})", index_val+1, number_of_verbs)}</h1>
+                    <h1 class="text-2xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-600 dark:from-pink-500 to-violet-700 dark:to-violet-500">{format!("{meaning} ({}/{})", index_val+1, number_of_verbs)}</h1>
                 }
             </div>
             <form>
@@ -356,8 +344,8 @@ pub fn game(props: &GameProperties) -> Html {
                     <p class="basis-1/5">{"Partizip II  "}</p>
                 </div>
                 <form class="flex flex-col md:flex-row md:space-x-2 justify-evenly w-full" method="POST" action="javascript:void(0);" {onsubmit}>
-                    <input autocomplete="off" ref={infinitiv_ref} required=true disabled={*given_value == 0} type="text" name="infinitiv" placeholder=" " value={(*given_value == 0).then(|| verb.infinitiv.clone())} class="table-input"/>
-                    <input autocomplete="off" ref={prasens_ich_ref} required=true disabled={*given_value == 1} type="text" name="prasens_ich" placeholder=" " value={(*given_value == 1).then(|| verb.prasens_ich.clone())} autofocus={*given_value != 0} class="table-input"/>
+                    <input autocomplete="off" ref={infinitiv_ref} required=true disabled={*given_value == 0} type="text" name="infinitiv" placeholder=" " value={(*given_value == 0).then(|| verb.infinitiv.clone())} autofocus={*given_value != 0}  class="table-input"/>
+                    <input autocomplete="off" ref={prasens_ich_ref} required=true disabled={*given_value == 1} type="text" name="prasens_ich" placeholder=" " value={(*given_value == 1).then(|| verb.prasens_ich.clone())} autofocus={*given_value == 0} class="table-input"/>
                     <input autocomplete="off" ref={prasens_er_ref} required=true disabled={*given_value == 2} type="text" name="prasens_er" placeholder=" " value={(*given_value == 2).then(|| verb.prasens_er.clone())} class="table-input"/>
                     <input autocomplete="off" ref={preterit_ref} required=true disabled={*given_value == 3} type="text" name="preterit" placeholder=" " value={(*given_value == 3).then(|| verb.preterit.clone())} class="table-input"/>
                     <input autocomplete="off" ref={partizip_ii_ref} required=true disabled={*given_value == 4}  type="text" name="partizip_ii" placeholder=" " value={(*given_value == 4).then(|| verb.partizip_ii.clone())} class="table-input"/>

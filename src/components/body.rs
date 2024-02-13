@@ -46,7 +46,7 @@ pub fn welcome_body(props: &WelcomeBodyProps) -> Html {
 
     html! {
       <>
-            <h1 class="text-2xl md:text-4xl font-bold mb-4" >{"Willkomen!"}</h1>
+            <h1 class="text-2xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-600 dark:from-pink-500 to-violet-700 dark:to-violet-500" >{"Willkomen!"}</h1>
             <div class="flex-grow"></div>
             <p class="text-md md:text-lg"><I18N label={"intro"} {translations}/></p>
             <div class="flex-grow"></div>
