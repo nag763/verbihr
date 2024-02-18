@@ -79,6 +79,7 @@ pub fn game(props: &GameProperties) -> Html {
     let default_locale = Locale::get_default_locale();
     let state_setter = &props.state_setter;
     let verbs = &props.verbs;
+    let errors = &props.errors;
 
     let (infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref) = (
         NodeRef::default(),
@@ -89,10 +90,9 @@ pub fn game(props: &GameProperties) -> Html {
     );
 
     let index = use_state(|| 0);
-    let errors = &props.errors;
 
     let index_val = *index;
-    let errors_val = errors.to_vec();
+    let errors_val: Vec<GermanVerb> = (*errors).to_vec();
 
     let given_value = use_memo(index_val, |_| rand::thread_rng().gen_range(0u8..5u8));
 
@@ -309,14 +309,17 @@ pub fn game(props: &GameProperties) -> Html {
     , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref, state_setter, errors, index, verb};
 
     {
-        let (infinitiv_ref, prasens_ich_ref) = (infinitiv_ref.clone(), prasens_ich_ref.clone());
-        use_effect_with(*given_value, move |given_value| {
-            gloo_console::log!("Given value", *given_value);
+        let (infinitiv_ref, prasens_ich_ref, given_value) = (
+            infinitiv_ref.clone(),
+            prasens_ich_ref.clone(),
+            given_value.clone(),
+        );
+        use_effect_with(*index, move |_| {
             if let (Some(infinitiv_ref), Some(prasens_ich_ref)) = (
                 infinitiv_ref.cast::<HtmlInputElement>(),
                 prasens_ich_ref.cast::<HtmlInputElement>(),
             ) {
-                if given_value != &0 {
+                if *given_value != 0 {
                     let _ = infinitiv_ref.focus();
                 } else {
                     let _ = prasens_ich_ref.focus();
@@ -324,7 +327,6 @@ pub fn game(props: &GameProperties) -> Html {
             }
         });
     }
-
     html! {
     <>
         <div class="flex flex-col space-y-4 justify-between h-full">
@@ -334,6 +336,7 @@ pub fn game(props: &GameProperties) -> Html {
                     <h1 class="text-2xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-600 dark:from-pink-500 to-violet-700 dark:to-violet-500">{format!("{meaning} ({}/{})", index_val+1, number_of_verbs)}</h1>
                 }
             </div>
+
             <form>
             <div class="flex flex-row md:flex-col border-separate space-y-2 md:space-x-2 md:space-y-4 dark:text-white w-full h-full">
                 <div class="flex flex-col md:flex-row justify-evenly w-full text-center">

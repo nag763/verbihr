@@ -68,19 +68,20 @@ pub fn body() -> Html {
     let locale = context.locale.as_ref().cloned();
     let state = use_state(State::default);
     let state_setter = state.setter();
-    let errors = context.errors.clone();
     let verbs = use_memo(*state == State::End, |_| {
         let mut verbs = GermanVerb::get_verbs();
         verbs.shuffle(&mut rand::thread_rng());
         verbs
     });
 
+    let errors = use_state(|| Vec::<GermanVerb>::new());
+
     let component: VNode = match *state {
         State::Welcome => {
             html! {<WelcomeBody {translations} onclick={move |_| {state_setter.set(State::Game)}} />}
         }
-        State::Game => html! { <Game {translations}  {locale} {state_setter} {errors} {verbs} />},
-        State::End => html! { <End {translations} {locale} {errors} {state_setter} /> },
+        State::Game => html! { <Game {translations}  {locale} {state_setter} {verbs} {errors} />},
+        State::End => html! { <End {translations} {locale} {state_setter} {errors}/> },
     };
 
     html! {

@@ -37,7 +37,7 @@ pub fn end(props: &EndProperties) -> Html {
             state_setter.set(State::Welcome);
             errors_setter.set(vec![]);
         })
-    , state_setter, errors_setter};
+    , state_setter};
 
     use_event_on_context(
         {
@@ -56,7 +56,7 @@ pub fn end(props: &EndProperties) -> Html {
         <>
             <div class="flex flex-col max-h-full space-y-4 justify-between h-full">
                 <div>
-                    <h1 class="text-2xl md:text-4xl font-bold mb-4">
+                    <h1 class="text-2xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-600 dark:from-pink-500 to-violet-700 dark:to-violet-500">
                         <I18N label={"end_reached"} {translations}/>
                     </h1>
                     <h2 class="text-xl md:text-md">
