@@ -309,24 +309,55 @@ pub fn game(props: &GameProperties) -> Html {
     , infinitiv_ref, prasens_ich_ref, prasens_er_ref, preterit_ref, partizip_ii_ref, state_setter, errors, index, verb};
 
     {
-        let (infinitiv_ref, prasens_ich_ref, given_value) = (
+        let (
+            infinitiv_ref,
+            prasens_ich_ref,
+            prasens_er_ref,
+            preterit_ref,
+            partizip_ii_ref,
+            given_value,
+            verb,
+        ) = (
             infinitiv_ref.clone(),
             prasens_ich_ref.clone(),
+            prasens_er_ref.clone(),
+            preterit_ref.clone(),
+            partizip_ii_ref.clone(),
             given_value.clone(),
+            verb.clone(),
         );
         use_effect_with(*index, move |_| {
-            if let (Some(infinitiv_ref), Some(prasens_ich_ref)) = (
+            if let (
+                Some(infinitiv_ref),
+                Some(prasens_ich_ref),
+                Some(prasens_er_ref),
+                Some(preterit_ref),
+                Some(partizip_ii_ref),
+            ) = (
                 infinitiv_ref.cast::<HtmlInputElement>(),
                 prasens_ich_ref.cast::<HtmlInputElement>(),
+                prasens_er_ref.cast::<HtmlInputElement>(),
+                preterit_ref.cast::<HtmlInputElement>(),
+                partizip_ii_ref.cast::<HtmlInputElement>(),
             ) {
                 if *given_value != 0 {
                     let _ = infinitiv_ref.focus();
                 } else {
                     let _ = prasens_ich_ref.focus();
                 }
+                let input: (HtmlInputElement, &str) = match *given_value {
+                    1 => (prasens_ich_ref, &verb.prasens_ich),
+                    2 => (prasens_er_ref, &verb.prasens_er),
+                    3 => (preterit_ref, &verb.preterit),
+                    4 => (partizip_ii_ref, &verb.partizip_ii),
+                    _ => (infinitiv_ref, &verb.infinitiv),
+                };
+                input.0.set_disabled(true);
+                input.0.set_value(input.1);
             }
         });
     }
+
     html! {
     <>
         <div class="flex flex-col space-y-4 justify-between h-full">
@@ -347,11 +378,11 @@ pub fn game(props: &GameProperties) -> Html {
                     <p class="basis-1/5">{"Partizip II  "}</p>
                 </div>
                 <form class="flex flex-col md:flex-row md:space-x-2 justify-evenly w-full" method="POST" action="javascript:void(0);" {onsubmit}>
-                    <input autocomplete="off" ref={infinitiv_ref} required=true disabled={*given_value == 0} type="text" name="infinitiv" placeholder=" " value={(*given_value == 0).then(|| verb.infinitiv.clone())} autofocus={*given_value != 0}  class="table-input"/>
-                    <input autocomplete="off" ref={prasens_ich_ref} required=true disabled={*given_value == 1} type="text" name="prasens_ich" placeholder=" " value={(*given_value == 1).then(|| verb.prasens_ich.clone())} autofocus={*given_value == 0} class="table-input"/>
-                    <input autocomplete="off" ref={prasens_er_ref} required=true disabled={*given_value == 2} type="text" name="prasens_er" placeholder=" " value={(*given_value == 2).then(|| verb.prasens_er.clone())} class="table-input"/>
-                    <input autocomplete="off" ref={preterit_ref} required=true disabled={*given_value == 3} type="text" name="preterit" placeholder=" " value={(*given_value == 3).then(|| verb.preterit.clone())} class="table-input"/>
-                    <input autocomplete="off" ref={partizip_ii_ref} required=true disabled={*given_value == 4}  type="text" name="partizip_ii" placeholder=" " value={(*given_value == 4).then(|| verb.partizip_ii.clone())} class="table-input"/>
+                    <input autocomplete="off" ref={infinitiv_ref} required=true type="text" name="infinitiv" placeholder=" " class="table-input"/>
+                    <input autocomplete="off" ref={prasens_ich_ref} required=true type="text" name="prasens_ich" placeholder=" " class="table-input"/>
+                    <input autocomplete="off" ref={prasens_er_ref} required=true  type="text" name="prasens_er" placeholder=" " class="table-input"/>
+                    <input autocomplete="off" ref={preterit_ref} required=true  type="text" name="preterit" placeholder=" "  class="table-input"/>
+                    <input autocomplete="off" ref={partizip_ii_ref} required=true type="text" name="partizip_ii" placeholder=" " class="table-input"/>
                     <input type="submit" hidden=true />
                 </form>
             </div>
