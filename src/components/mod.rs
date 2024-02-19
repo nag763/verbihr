@@ -62,7 +62,7 @@ pub mod footer {
         let context = use_context::<Rc<Context>>().unwrap();
         let translations = &context.translations;
         html! {
-            <footer class="text-center py-1 lg:py-2 bg-slate-100 dark:bg-gray-800 h-full text-black dark:text-white text-xs h-full ">
+            <footer class="text-center py-1 lg:py-2 bg-slate-100 dark:bg-gray-800 h-full text-black dark:text-white text-xs h-full print:hidden ">
             <div class="flex lg:flex-col items-center justify-center space-x-2 mt-auto">
                 <a href="https://github.com/nag763/verbihr" class="transform transition-transform duration-300 hover:scale-110 focus:outline-none focus-visible:scale-125" target="_blank" >
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -156,7 +156,7 @@ pub mod header {
                     </svg>
                 <span>{"Verbihr"}</span>
             </div>
-            <div class="flex space-x-4">
+            <div class="flex space-x-4 print:hidden">
             <button onclick={oninfoclick} class="focus:outline-none focus-visible:scale-125">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 hover:scale-110 transition-transform duration-300 ease-in-out">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14v-4M12 6h.01"></path>

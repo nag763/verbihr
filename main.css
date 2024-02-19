@@ -8,7 +8,7 @@
     }
     
     .table-input-validated {
-        @apply table-input border-green-500 dark:border-green-500;
+        @apply table-input border-green-500 dark:border-green-500 basis-1/5;
     }
 
     .common-kbd {

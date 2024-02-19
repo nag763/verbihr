@@ -359,8 +359,7 @@ pub fn game(props: &GameProperties) -> Html {
     }
 
     html! {
-    <>
-        <div class="flex flex-col space-y-4 justify-between h-full">
+        <div class="flex flex-col space-y-4 justify-between items-center h-full w-full overflow-visible">
 
             <div>
                 if let Some(meaning) = meaning {
@@ -369,7 +368,7 @@ pub fn game(props: &GameProperties) -> Html {
             </div>
 
             <form>
-            <div class="flex flex-row md:flex-col border-separate space-y-2 md:space-x-2 md:space-y-4 dark:text-white w-full h-full">
+            <div class="flex flex-row md:flex-col border-separate space-x-2 md:space-x-0 md:space-y-4 dark:text-white w-full h-full">
                 <div class="flex flex-col md:flex-row justify-evenly w-full text-center">
                     <p class="basis-1/5">{"Infinitiv    "}</p>
                     <p class="basis-1/5">{"Präsens (ich)"}</p>
@@ -389,7 +388,7 @@ pub fn game(props: &GameProperties) -> Html {
 
             </form>
 
-            <div class="flex flex-col">
+            <div class="flex flex-col w-full">
 
                 if !errors_val.is_empty() {
                     <p>
@@ -397,7 +396,7 @@ pub fn game(props: &GameProperties) -> Html {
                     </p>
                 }
 
-                <div class="flex flex-row-reverse space-x-3 space-x-reverse items-center justify-center">
+                <div class="flex flex-row-reverse space-x-3 space-x-reverse items-center justify-center text-xs sm:text-sm md:text-base">
                     <button onclick={onvalidate} class="bg-green-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-green-500 transition duration-300 w-2/3 md:w-1/3 h-1/6 overflow-hidden truncate focus:outline-none focus-visible:scale-105" >
                         <I18N label={"validate"} {translations}/>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
@@ -409,7 +408,7 @@ pub fn game(props: &GameProperties) -> Html {
                     </button>
 
                 </div>
-                <div class="flex space-x-3 items-center justify-center">
+                <div class="flex space-x-3 items-center justify-center  text-xs sm:text-sm md:text-base">
                     <button onclick={giveup} class="bg-yellow-500 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-yellow-400 transition duration-300 w-2/3 md:w-1/3 h-1/6 focus:outline-none focus-visible:scale-105" >
                         <span><I18N label={"give_up"} {translations}/></span>
                     </button>
@@ -419,6 +418,5 @@ pub fn game(props: &GameProperties) -> Html {
                 </div>
             </div>
         </div>
-    </>
     }
 }

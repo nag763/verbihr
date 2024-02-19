@@ -45,7 +45,7 @@ pub fn welcome_body(props: &WelcomeBodyProps) -> Html {
     );
 
     html! {
-      <>
+      <div class="flex flex-col items-center justify-between h-full w-full">
             <h1 class="text-2xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-600 dark:from-pink-500 to-violet-700 dark:to-violet-500" >{"Willkomen!"}</h1>
             <div class="flex-grow"></div>
             <p class="text-md md:text-lg"><I18N label={"intro"} {translations}/></p>
@@ -57,7 +57,7 @@ pub fn welcome_body(props: &WelcomeBodyProps) -> Html {
               </svg>
             </button>
             <div class="flex-grow"></div>
-          </>
+          </div>
     }
 }
 
@@ -74,23 +74,25 @@ pub fn body() -> Html {
         verbs
     });
 
-    let errors = use_state(|| Vec::<GermanVerb>::new());
+    let errors = use_state(Vec::<GermanVerb>::new);
 
     let component: VNode = match *state {
         State::Welcome => {
             html! {<WelcomeBody {translations} onclick={move |_| {state_setter.set(State::Game)}} />}
         }
         State::Game => html! { <Game {translations}  {locale} {state_setter} {verbs} {errors} />},
-        State::End => html! { <End {translations} {locale} {state_setter} {errors}/> },
+        State::End => {
+            html! { <End {translations} {locale} {state_setter} {errors} verbs={(*verbs).to_vec()}/> }
+        }
     };
 
     html! {
-        <main class="grid grid-cols-9 items-center justify-center text-black dark:text-white p-6 md:p-12 h-full">
-        <div class="col-span-1 md:col-span-2"/>
-        <div class="flex flex-col items-center justify-center text-center col-span-7 md:col-span-5 h-full">
-          {component}
-        </div>
-        <div class="col-span-1 md:col-span-2"/>
+        <main class="grid grid-cols-9 items-center justify-center text-black dark:text-white p-6 md:p-12 print:p-6 h-full">
+            <div class="col-span-1 md:col-span-2 md:print:col-span-1"/>
+            <div class="items-center justify-center text-center col-span-7 md:col-span-5 md:print:col-span-7 h-full overflow-y-auto print:overflow-visible" >
+            {component}
+            </div>
+            <div class="col-span-1 md:col-span-2 "/>
         </main>
     }
 }
