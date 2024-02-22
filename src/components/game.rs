@@ -377,11 +377,11 @@ pub fn game(props: &GameProperties) -> Html {
                     <p class="basis-1/5">{"Partizip II  "}</p>
                 </div>
                 <form class="flex flex-col md:flex-row md:space-x-2 justify-evenly w-full" method="POST" action="javascript:void(0);" {onsubmit}>
-                    <input autocomplete="off" ref={infinitiv_ref} required=true type="text" name="infinitiv" placeholder=" " class="table-input"/>
-                    <input autocomplete="off" ref={prasens_ich_ref} required=true type="text" name="prasens_ich" placeholder=" " class="table-input"/>
-                    <input autocomplete="off" ref={prasens_er_ref} required=true  type="text" name="prasens_er" placeholder=" " class="table-input"/>
-                    <input autocomplete="off" ref={preterit_ref} required=true  type="text" name="preterit" placeholder=" "  class="table-input"/>
-                    <input autocomplete="off" ref={partizip_ii_ref} required=true type="text" name="partizip_ii" placeholder=" " class="table-input"/>
+                    <input autocomplete="off" ref={infinitiv_ref} required=true spellcheck="false" type="text" name="infinitiv" placeholder=" " class="table-input"/>
+                    <input autocomplete="off" ref={prasens_ich_ref} required=true spellcheck="false" type="text" name="prasens_ich" placeholder=" " class="table-input"/>
+                    <input autocomplete="off" ref={prasens_er_ref} required=true spellcheck="false" type="text" name="prasens_er" placeholder=" " class="table-input"/>
+                    <input autocomplete="off" ref={preterit_ref} required=true spellcheck="false" type="text" name="preterit" placeholder=" "  class="table-input"/>
+                    <input autocomplete="off" ref={partizip_ii_ref} required=true spellcheck="false" type="text" name="partizip_ii" placeholder=" " class="table-input"/>
                     <input type="submit" hidden=true />
                 </form>
             </div>
