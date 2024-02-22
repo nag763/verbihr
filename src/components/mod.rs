@@ -185,14 +185,17 @@ pub mod modal {
 
     use std::rc::Rc;
 
-    use web_sys::KeyboardEvent;
+    use web_sys::{KeyboardEvent, MouseEvent, EventTarget, Element};
     use yew::{function_component, html, use_context, Html};
+    use wasm_bindgen::JsCast;
 
     use crate::{
         components::{use_event_on_context, ONKEYDOWN_EVENT_NAME},
         context::Context,
         i18n::I18N,
     };
+
+    const MODAL_ID : &str = "verbihr_modal";
 
     #[function_component(Modal)]
     pub fn modal() -> Html {
@@ -216,14 +219,32 @@ pub mod modal {
             ONKEYDOWN_EVENT_NAME,
         );
 
+        let onoutsideclick = {
+                let is_modal_open = is_modal_open.clone();
+                move |me: MouseEvent| {
+                    let target: Option<EventTarget> = me.target();
+                    let element = target.and_then(|t| t.dyn_into::<Element>().ok());
+                    if let Some(element) = element {
+                        if let Ok(maybe_undefined_element) =
+                            element.closest(&format!("#{MODAL_ID}"))
+                        {
+                            if maybe_undefined_element.is_none() {
+                                is_modal_open.set(false);
+                            }
+                        }
+                    }
+                }
+        };
+
+
         html! {
             <>
             if is_modal_open_val {
-                <div class="absolute left-0 top-0 bg-black bg-opacity-60 h-full w-full z-100">
+                <div onclick={onoutsideclick} class="absolute left-0 top-0 bg-black bg-opacity-60 h-full w-full z-100">
                     <div class="grid grid-cols-9 items-center justify-center text-black dark:text-white p-6 md:p-12 h-full">
                         <div class="col-span-1 sm:col-span-2 lg:col-span-3"></div>
                         <div class="col-span-7 sm:col-span-5 lg:col-span-3 bg-slate-300 dark:bg-gray-800 border-2 rounded-lg border-slate-400 dark:border-gray-700">
-                            <div name="modal-content flex flex-col space-y-4 px-2" >
+                            <div id={MODAL_ID} name="modal-content flex flex-col space-y-4 px-2" >
                                 <div class="flex justify-between border-b border-slate-400 dark:border-gray-700">
                                     <h1 class="pl-2">
                                     <I18N label="help_modal_title" {translations} />
