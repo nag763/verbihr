@@ -39,8 +39,7 @@ Same goes for translations, I obviously don't speak all the languages the app is
 
 Actually this tool (unless requested) will only be modified if I feel like something is needed during my learning experience.
 
-If you do think other features should be added, fill in this form : 
+If you do think other features should be added, fill in this form : https://github.com/nag763/verbihr/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=
 
 But of course if you want to contribute by your own to the source code, feel free to as well 😄
-
 Leaving a star if this project helped you in completing any of your project's feature would also be a small but appreciated help ⭐
