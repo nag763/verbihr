@@ -24,7 +24,7 @@ jobs:
     - name: Install trunk
       run: cargo binstall trunk -y
     - name: Build
-      run: trunk build --release -M
+      run: trunk build --release -M --public-url https://nag763.github.io/verbihr/
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v3.0.1
       with:
