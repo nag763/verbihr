@@ -15,7 +15,6 @@ pub enum State {
 #[derive(Clone, PartialEq)]
 pub struct Context {
     pub locale: UseStateHandle<std::option::Option<Locale>>,
-    pub dark_mode: UseStateHandle<bool>,
     pub translations: Rc<Option<TranslationMap>>,
     pub is_modal_open: UseStateHandle<bool>,
 }

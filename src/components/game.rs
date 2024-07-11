@@ -368,7 +368,7 @@ pub fn game(props: &GameProperties) -> Html {
             </div>
 
             <form>
-            <div class="flex flex-row md:flex-col border-separate space-x-2 md:space-x-0 md:space-y-4 dark:text-white w-full h-full">
+            <div class="flex flex-row md:flex-col border-separate space-x-2 md:space-x-0 md:space-y-4 w-full h-full">
                 <div class="flex flex-col md:flex-row justify-evenly w-full text-center">
                     <p class="basis-1/5">{"Infinitiv    "}</p>
                     <p class="basis-1/5">{"Präsens (ich)"}</p>
@@ -388,7 +388,7 @@ pub fn game(props: &GameProperties) -> Html {
 
             </form>
 
-            <div class="flex flex-col w-full">
+            <div class="flex flex-col w-full space-y-2">
 
                 if !errors_val.is_empty() {
                     <p>
@@ -397,22 +397,22 @@ pub fn game(props: &GameProperties) -> Html {
                 }
 
                 <div class="flex flex-row-reverse space-x-3 space-x-reverse items-center justify-center text-xs sm:text-sm md:text-base">
-                    <button onclick={onvalidate} class="bg-green-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-green-500 transition duration-300 w-2/3 md:w-1/3 h-1/6 overflow-hidden truncate focus:outline-none focus-visible:scale-105" >
+                    <button onclick={onvalidate} class="btn btn-success focus:outline-none focus-visible:scale-105 flex-1" >
                         <I18N label={"validate"} {translations}/>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                     </button>
-                    <button onclick={clear_inputs} class="bg-gray-600 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-500 transition duration-300 w-2/3 md:w-1/3 h-1/6 focus:outline-none focus-visible:scale-105" >
+                    <button onclick={clear_inputs} class="btn btn-neutral focus:outline-none focus-visible:scale-105 flex-1" >
                         <span><I18N label={"clear_inputs"} {translations}/></span>
                     </button>
 
                 </div>
                 <div class="flex space-x-3 items-center justify-center  text-xs sm:text-sm md:text-base">
-                    <button onclick={giveup} class="bg-yellow-500 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-yellow-400 transition duration-300 w-2/3 md:w-1/3 h-1/6 focus:outline-none focus-visible:scale-105" >
+                    <button onclick={giveup} class="btn btn-warning focus:outline-none focus-visible:scale-105 flex-1" >
                         <span><I18N label={"give_up"} {translations}/></span>
                     </button>
-                    <button onclick={stop_here} class="bg-rose-500 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-rose-400 transition duration-300 w-2/3 md:w-1/3 h-1/6 focus:outline-none focus-visible:scale-105" >
+                    <button onclick={stop_here} class="btn btn-error focus:outline-none focus-visible:scale-105 flex-1" >
                         <span><I18N label={"stop_here"} {translations}/></span>
                     </button>
                 </div>

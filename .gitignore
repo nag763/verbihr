@@ -7,3 +7,5 @@ release/*
 !release/index.js
 !release/favicon.ico
 src/resources/*.pc
+node_modules/
+package-lock.json

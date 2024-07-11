@@ -62,7 +62,7 @@ pub mod footer {
         let context = use_context::<Rc<Context>>().unwrap();
         let translations = &context.translations;
         html! {
-            <footer class="text-center py-1 lg:py-2 bg-slate-100 dark:bg-gray-800 h-full text-black dark:text-white text-xs h-full print:hidden ">
+            <footer class="text-center py-1 lg:py-2  h-full text-xs h-full print:hidden ">
             <div class="flex lg:flex-col items-center justify-center space-x-2 mt-auto">
                 <a href="https://github.com/nag763/verbihr" class="transform transition-transform duration-300 hover:scale-110 focus:outline-none focus-visible:scale-125" target="_blank" >
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -81,40 +81,39 @@ pub mod header {
 
     use std::rc::Rc;
 
-    use web_sys::HtmlSelectElement;
-    use yew::{function_component, html, use_context, Html, NodeRef};
+    use web_sys::{HtmlInputElement, HtmlSelectElement};
+    use yew::{function_component, html, use_context, use_effect_with, Html, NodeRef};
 
     use crate::{context::Context, i18n::Locale};
 
     #[function_component(Header)]
     pub fn header() -> Html {
-        let light_mode_icon: Html = html! {
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-        };
+        let theme_ref = NodeRef::default();
 
-        let dark_mode_icon: Html = html! {
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
-            </svg>
-
-        };
+        {
+            let theme_ref = theme_ref.clone();
+            use_effect_with((), move |_| {
+                if let Some(theme_ref) = theme_ref.cast::<HtmlInputElement>() {
+                    let val = match web_sys::window()
+                        .unwrap()
+                        .match_media("(prefers-color-scheme: dark)")
+                        .unwrap()
+                        .unwrap()
+                        .matches()
+                    {
+                        true => "light",
+                        false => "dark",
+                    };
+                    theme_ref.set_value(val);
+                }
+            });
+        }
 
         let context = use_context::<Rc<Context>>().unwrap();
 
         let user_locale = &context.locale;
         let is_modal_open = &context.is_modal_open;
         let select_ref = NodeRef::default();
-        let dark_mode = context.dark_mode.clone();
         let is_selected = |locale: &Locale| {
             if let Some(user_locale) = user_locale.as_ref() {
                 user_locale.short_name == locale.short_name
@@ -131,8 +130,6 @@ pub mod header {
             select_ref,
             user_locale
         );
-
-        let onclick = create_callback_with_local_clone!(dark_mode.set(!(*dark_mode)), dark_mode);
 
         let oninfoclick =
             create_callback_with_local_clone!(is_modal_open.set(!(*is_modal_open)), is_modal_open);
@@ -157,20 +154,32 @@ pub mod header {
                 <span>{"Verbihr"}</span>
             </div>
             <div class="flex space-x-4 print:hidden">
-            <button onclick={oninfoclick} class="focus:outline-none focus-visible:scale-125">
+            <button onclick={oninfoclick} class="focus:outline-none focus-visible:scale-125 dark:text-black">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 hover:scale-110 transition-transform duration-300 ease-in-out">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14v-4M12 6h.01"></path>
                 </svg>
             </button>
 
-            <button {onclick} class="w-6 h-6 text-black transform transition-transform duration-300 hover:rotate-180 focus:outline-none focus-visible:scale-125">
-                if *context.dark_mode {
-                    {dark_mode_icon}
-                } else {
-                    {light_mode_icon}
-                }
-            </button>
-            <select {onchange} ref={select_ref} class="border-0 bg-transparent hover:text-blue-500 transition-colors duration-300 focus:outline-none focus-visible:scale-125">
+            <label class="swap swap-rotate dark:text-black hover:scale-110 ">
+            <input type="checkbox" class="theme-controller"  ref={theme_ref} />
+
+            <svg
+                class="swap-on h-6 w-6 fill-current"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24">
+                <path
+                d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" />
+            </svg>
+
+            <svg
+                class="swap-off h-6 w-6 fill-current"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24">
+                <path
+                d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
+            </svg>
+            </label>
+            <select {onchange} ref={select_ref} class="border-0 bg-transparent transition-colors duration-300 focus:outline-none focus-visible:scale-125 dark:text-black">
                 {Locale::get_locales().iter().map(|locale|
                     html! { <option value={locale.short_name.to_string()} selected={is_selected(locale)}>{locale.short_name.to_string()}</option> }
                 ).collect::<Html>()}
@@ -185,9 +194,9 @@ pub mod modal {
 
     use std::rc::Rc;
 
-    use web_sys::{KeyboardEvent, MouseEvent, EventTarget, Element};
-    use yew::{function_component, html, use_context, Html};
     use wasm_bindgen::JsCast;
+    use web_sys::{Element, EventTarget, KeyboardEvent, MouseEvent};
+    use yew::{function_component, html, use_context, Html};
 
     use crate::{
         components::{use_event_on_context, ONKEYDOWN_EVENT_NAME},
@@ -195,7 +204,7 @@ pub mod modal {
         i18n::I18N,
     };
 
-    const MODAL_ID : &str = "verbihr_modal";
+    const MODAL_ID: &str = "verbihr_modal";
 
     #[function_component(Modal)]
     pub fn modal() -> Html {
@@ -220,22 +229,19 @@ pub mod modal {
         );
 
         let onoutsideclick = {
-                let is_modal_open = is_modal_open.clone();
-                move |me: MouseEvent| {
-                    let target: Option<EventTarget> = me.target();
-                    let element = target.and_then(|t| t.dyn_into::<Element>().ok());
-                    if let Some(element) = element {
-                        if let Ok(maybe_undefined_element) =
-                            element.closest(&format!("#{MODAL_ID}"))
-                        {
-                            if maybe_undefined_element.is_none() {
-                                is_modal_open.set(false);
-                            }
+            let is_modal_open = is_modal_open.clone();
+            move |me: MouseEvent| {
+                let target: Option<EventTarget> = me.target();
+                let element = target.and_then(|t| t.dyn_into::<Element>().ok());
+                if let Some(element) = element {
+                    if let Ok(maybe_undefined_element) = element.closest(&format!("#{MODAL_ID}")) {
+                        if maybe_undefined_element.is_none() {
+                            is_modal_open.set(false);
                         }
                     }
                 }
+            }
         };
-
 
         html! {
             <>

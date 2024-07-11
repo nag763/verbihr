@@ -26,34 +26,20 @@ pub fn app() -> Html {
         locale.as_ref().map(|locale| locale.clone().translations)
     });
 
-    let dark_mode = use_state(|| {
-        if let Ok(val) = web_sys::window()
-            .unwrap()
-            .match_media("(prefers-color-scheme: dark)")
-        {
-            val.is_some()
-        } else {
-            false
-        }
-    });
-
-    let dark_mode_val = *dark_mode;
-
     let context = Rc::new(Context {
         locale,
-        dark_mode,
         translations,
         is_modal_open: use_state(|| false),
     });
 
     html! {
         <ContextProvider <Rc<Context>> {context}>
-            <div class={classes!("static", "w-full", "h-screen", dark_mode_val.then_some("dark"))}>
+            <div class={classes!("static", "w-full", "h-screen")}>
                 <div class={classes!["h-full", "grid", "grid-rows-12", "auto-rows-fr", "w-full"]}>
                     <div class="row-span-1 bg-gradient-to-r from-black via-red-700 to-yellow-500">
                             <Header/>
                         </div>
-                        <div class="row-span-10 bg-opacity-25 bg-gradient-to-b from-slate-200 to-slate-100 dark:from-gray-900 dark:to-gray-800">
+                        <div class="row-span-10 bg-opacity-25">
                             <Body />
 
                         </div>

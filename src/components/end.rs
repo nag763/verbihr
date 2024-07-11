@@ -53,7 +53,7 @@ pub fn end(props: &EndProperties) -> Html {
     );
 
     html! {
-        <div class="grid grid-rows-6 space-y-4 justify-between max-h-full">
+        <div class="grid grid-rows-6 space-y-4 max-h-full w-full">
             <div class="row-span-1 print:hidden">
                 <h1 class="text-2xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-600 dark:from-pink-500 to-violet-700 dark:to-violet-500">
                     <I18N label={"end_reached"} {translations}/>
@@ -97,7 +97,7 @@ pub fn end(props: &EndProperties) -> Html {
             }
             </div>
             <div class="row-span-1 flex items-center justify-center print:hidden">
-                <button onclick={move |e: MouseEvent| leaveevent.emit(e.into())} class="bg-blue-500 text-white py-4 px-8 rounded-lg flex items-center justify-center space-x-2 hover:bg-blue-400 transition duration-300 w-2/3 md:w-1/3 h-1/6 focus:outline-none focus-visible:scale-105" >
+                <button onclick={move |e: MouseEvent| leaveevent.emit(e.into())} class="btn btn-primary btn-lg btn-wide animate-pulse animate-once focus:outline-none focus-visible:scale-105" >
                     <span><I18N label={"restart"} {translations}/></span>
                 </button>
             </div>

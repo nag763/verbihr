@@ -1,0 +1,9 @@
+{
+  "name": "verbihr",
+  "version": "1.0.0",
+  "description": "A tool to learn german",
+  "dependencies": {
+    "daisyui": "^4.12.10",
+    "tailwindcss-animated": "^1.1.2"
+  }
+}
