@@ -194,14 +194,12 @@ pub mod modal {
 
     use std::rc::Rc;
 
-    use wasm_bindgen::JsCast;
-    use web_sys::{Element, EventTarget, KeyboardEvent, MouseEvent};
-    use yew::{function_component, html, use_context, Html};
+    use web_sys::KeyboardEvent;
+    use yew::{classes, function_component, html, use_context, Html};
 
     use crate::{
         components::{use_event_on_context, ONKEYDOWN_EVENT_NAME},
         context::Context,
-        i18n::I18N,
     };
 
     const MODAL_ID: &str = "verbihr_modal";
@@ -209,8 +207,6 @@ pub mod modal {
     #[function_component(Modal)]
     pub fn modal() -> Html {
         let context = use_context::<Rc<Context>>().unwrap();
-
-        let translations = &context.translations;
 
         let is_modal_open = context.is_modal_open.clone();
         let is_modal_open_val = *context.is_modal_open.clone();
@@ -228,75 +224,43 @@ pub mod modal {
             ONKEYDOWN_EVENT_NAME,
         );
 
-        let onoutsideclick = {
-            let is_modal_open = is_modal_open.clone();
-            move |me: MouseEvent| {
-                let target: Option<EventTarget> = me.target();
-                let element = target.and_then(|t| t.dyn_into::<Element>().ok());
-                if let Some(element) = element {
-                    if let Ok(maybe_undefined_element) = element.closest(&format!("#{MODAL_ID}")) {
-                        if maybe_undefined_element.is_none() {
-                            is_modal_open.set(false);
-                        }
-                    }
-                }
-            }
-        };
 
         html! {
-            <>
-            if is_modal_open_val {
-                <div onclick={onoutsideclick} class="absolute left-0 top-0 bg-black bg-opacity-60 h-full w-full z-100">
-                    <div class="grid grid-cols-9 items-center justify-center text-black dark:text-white p-6 md:p-12 h-full">
-                        <div class="col-span-1 sm:col-span-2 lg:col-span-3"></div>
-                        <div class="col-span-7 sm:col-span-5 lg:col-span-3 bg-slate-300 dark:bg-gray-800 border-2 rounded-lg border-slate-400 dark:border-gray-700">
-                            <div id={MODAL_ID} name="modal-content flex flex-col space-y-4 px-2" >
-                                <div class="flex justify-between border-b border-slate-400 dark:border-gray-700">
-                                    <h1 class="pl-2">
-                                    <I18N label="help_modal_title" {translations} />
-                                    </h1>
-                                    <svg onclick={move |_| is_modal_open.set(false)}xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
+                        <div id={MODAL_ID} class={classes!["modal", is_modal_open_val.then(|| Some("modal-open"))]}>
+                            <div class="modal-box flex flex-col space-y-1">
+                                <div class="flex flex-row justify-between">
+                                    <h3 class="text-lg font-bold">{"Help"}</h3>
+                                    <button onclick={move |_| is_modal_open.set(false)} class="btn">{"Close"}</button>
                                 </div>
-                                <div class="flex flex-col space-y-2 mb-2">
-                                    <h2 class="p-2"><I18N label="keybindings" {translations} /></h2>
-                                    <div class="grid grid-cols-4 items-center justify-center text-center gap-4 w-full">
-                                        <div class="flex space-x-0.5 items-center justify-center ">
-                                            <kbd class="common-kbd">{"ALT"}</kbd><p>{"+"}</p><kbd class="common-kbd">{"a"}</kbd>
-                                        </div>
-                                        <div>
-                                            {"ä"}
-                                        </div>
-                                        <div class="flex space-x-0.5 items-center justify-center ">
-                                            <kbd class="common-kbd">{"ALT"}</kbd><p>{"+"}</p><kbd class="common-kbd">{"i"}</kbd>
-                                        </div>
-                                        <div>
-                                            {"ï"}
-                                        </div>
-                                        <div class="flex space-x-0.5 items-center justify-center ">
-                                            <kbd class="common-kbd">{"ALT"}</kbd><p>{"+"}</p><kbd class="common-kbd">{"u"}</kbd>
-                                        </div>
-                                        <div>
-                                            {"ü"}
-                                        </div>
-                                        <div class="flex space-x-0.5 items-center justify-center ">
-                                            <kbd class="common-kbd">{"ALT"}</kbd><p>{"+"}</p><kbd class="common-kbd">{"s"}</kbd>
-                                        </div>
-                                        <div>
-                                            {"ß"}
-                                        </div>
-                                    </div>
-                                </div>
-
+                                <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>{"Shortcut"}</th>
+                                        <th>{"Output"}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"a"}</kbd></td>
+                                        <td>{"ä"}</td>
+                                    </tr>
+                                        <tr>
+                                        <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"i"}</kbd></td>
+                                        <td>{"ï"}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"u"}</kbd></td>
+                                        <td>{"ü"}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"s"}</kbd></td>
+                                        <td>{"ß"}</td>
+                                    </tr>
+                                </tbody>
+                                </table>
                             </div>
-                        </div>
-                        <div class="col-span-1 sm:col-span-2 lg:col-span-3"></div>
                     </div>
-                </div>
             }
-            </>
-        }
     }
 }
 

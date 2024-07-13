@@ -397,22 +397,22 @@ pub fn game(props: &GameProperties) -> Html {
                 }
 
                 <div class="flex flex-row-reverse space-x-3 space-x-reverse items-center justify-center text-xs sm:text-sm md:text-base">
-                    <button onclick={onvalidate} class="btn btn-success focus:outline-none focus-visible:scale-105 flex-1" >
+                    <button onclick={onvalidate} class="btn btn-success flex-1" >
                         <I18N label={"validate"} {translations}/>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                     </button>
-                    <button onclick={clear_inputs} class="btn btn-neutral focus:outline-none focus-visible:scale-105 flex-1" >
+                    <button onclick={clear_inputs} class="btn btn-neutral flex-1" >
                         <span><I18N label={"clear_inputs"} {translations}/></span>
                     </button>
 
                 </div>
                 <div class="flex space-x-3 items-center justify-center  text-xs sm:text-sm md:text-base">
-                    <button onclick={giveup} class="btn btn-warning focus:outline-none focus-visible:scale-105 flex-1" >
+                    <button onclick={giveup} class="btn btn-warning flex-1" >
                         <span><I18N label={"give_up"} {translations}/></span>
                     </button>
-                    <button onclick={stop_here} class="btn btn-error focus:outline-none focus-visible:scale-105 flex-1" >
+                    <button onclick={stop_here} class="btn btn-error flex-1" >
                         <span><I18N label={"stop_here"} {translations}/></span>
                     </button>
                 </div>
