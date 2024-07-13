@@ -224,43 +224,42 @@ pub mod modal {
             ONKEYDOWN_EVENT_NAME,
         );
 
-
         html! {
-                        <div id={MODAL_ID} class={classes!["modal", is_modal_open_val.then(|| Some("modal-open"))]}>
-                            <div class="modal-box flex flex-col space-y-1">
-                                <div class="flex flex-row justify-between">
-                                    <h3 class="text-lg font-bold">{"Help"}</h3>
-                                    <button onclick={move |_| is_modal_open.set(false)} class="btn">{"Close"}</button>
-                                </div>
-                                <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>{"Shortcut"}</th>
-                                        <th>{"Output"}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"a"}</kbd></td>
-                                        <td>{"ä"}</td>
-                                    </tr>
-                                        <tr>
-                                        <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"i"}</kbd></td>
-                                        <td>{"ï"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"u"}</kbd></td>
-                                        <td>{"ü"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"s"}</kbd></td>
-                                        <td>{"ß"}</td>
-                                    </tr>
-                                </tbody>
-                                </table>
+                    <div id={MODAL_ID} class={classes!["modal", is_modal_open_val.then(|| Some("modal-open"))]}>
+                        <div class="modal-box flex flex-col space-y-1">
+                            <div class="flex flex-row justify-between">
+                                <h3 class="text-lg font-bold">{"Help"}</h3>
+                                <button onclick={move |_| is_modal_open.set(false)} class="btn">{"Close"}</button>
                             </div>
-                    </div>
-            }
+                            <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>{"Shortcut"}</th>
+                                    <th>{"Output"}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"a"}</kbd></td>
+                                    <td>{"ä"}</td>
+                                </tr>
+                                    <tr>
+                                    <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"i"}</kbd></td>
+                                    <td>{"ï"}</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"u"}</kbd></td>
+                                    <td>{"ü"}</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd class="kbd">{"ALT"}</kbd>{"+"}<kbd class="kbd">{"s"}</kbd></td>
+                                    <td>{"ß"}</td>
+                                </tr>
+                            </tbody>
+                            </table>
+                        </div>
+                </div>
+        }
     }
 }
 
