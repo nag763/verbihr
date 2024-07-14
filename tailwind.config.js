@@ -14,4 +14,15 @@ module.exports = {
   },
   plugins: [require('daisyui'), 
   require('tailwindcss-animated')],
+  daisyui: {
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/theming/themes")["light"],
+		  "base-100": "#eceff4",
+		},
+	},
+	"dark"
+	]
+}
 }
