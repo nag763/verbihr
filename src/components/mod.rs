@@ -225,7 +225,7 @@ pub mod modal {
         );
 
         html! {
-                    <div id={MODAL_ID} class={classes!["modal", is_modal_open_val.then(|| Some("modal-open"))]}>
+                    <div id={MODAL_ID} class={classes!["modal", is_modal_open_val.then_some(Some("modal-open"))]}>
                         <div class="modal-box flex flex-col space-y-1">
                             <div class="flex flex-row justify-between">
                                 <h3 class="text-lg font-bold">{"Help"}</h3>
